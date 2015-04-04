@@ -298,7 +298,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 	{ //vc
 		$this->plugName = (postVar('filename')) ? postVar('filename') : $this->plugName; //vc
 		$result         = $this->verCheck(); //vc
-		echo '<span style="color: #'.(($result['version'] == $this->getVersion()) ? '00f' : 'f00').'">'.htmlspecialchars($result['message'], ENT_QUOTES).'</span>'; //vc
+		echo '<span style="color: #'.(($result['version'] == $this->getVersion()) ? '00f' : 'f00').'">'.htmlspecialchars($result['message'], ENT_QUOTES,_CHARSET).'</span>'; //vc
 	}
 	function event_QuickMenu($data)
 	{
@@ -462,7 +462,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 			case "Text":     //width
 			case "Number":   //width
 				echo '<input tabindex="'.$tabindex.'" type="text" name="f__'.$row["fname"].'" style="width: '.$row["fsetting"].
-			'px;" maxlength="255" value="'.htmlspecialchars($row_item["f__".$row["fname"]]).'" /><br />';
+			'px;" maxlength="255" value="'.htmlspecialchars($row_item["f__".$row["fname"]], ENT_QUOTES, _CHARSET).'" /><br />';
 				break;
 			case "Textarea": //width/rows
 				$fsetting = explode("/", $row["fsetting"]);
@@ -485,7 +485,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 				$blog = & $manager->getBlog($blogid);
 				$textareabody = $row_item["f__".$row["fname"]];
 				$textareabody = ($blog->convertBreaks()) ? removeBreaks($textareabody) : $textareabody;
-				echo htmlspecialchars($textareabody);
+				echo htmlspecialchars($textareabody, ENT_QUOTES, _CHARSET);
 				echo '</textarea><br />';
 				break;
 			case "DateTime": //表示形式
@@ -646,7 +646,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 				$collections    = MEDIA::getCollectionList();
 				foreach ($collections as $dirname => $description)
 				{
-					$xml_str .= '<collection listLabel="'.htmlspecialchars($description).'" listData="'.$dirname.'" />'."\n";
+					$xml_str .= '<collection listLabel="'.htmlspecialchars($description, ENT_QUOTES, _CHARSET).'" listData="'.$dirname.'" />'."\n";
 				}
 				$xml_str  .= "</ImageTypeFormSetting>\n";
 				$xml_str  .= '<amount type="'.intRequestVar('amount').'" />'."\n";
@@ -1136,7 +1136,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 				switch ($format)
 				{
 					case 'htmlspecialchars':
-						$rdata = htmlspecialchars($rdata, ENT_QUOTES);
+						$rdata = htmlspecialchars($rdata, ENT_QUOTES, _CHARSET);
 						$rdata = nl2br($rdata);
 						break;
 					case 'removeBreaks':
@@ -1144,12 +1144,12 @@ class NP_znItemFieldEX extends NucleusPlugin
 						break;
 					case 'removeBreaks_htmlspecialchars':
 						$rdata = removeBreaks($rdata);
-						$rdata = htmlspecialchars($rdata, ENT_QUOTES);
+						$rdata = htmlspecialchars($rdata, ENT_QUOTES, _CHARSET);
 						$rdata = nl2br($rdata);
 						break;
 					case 'removeBreaks_htmlspecialchars_space':
 						$rdata = removeBreaks($rdata);
-						$rdata = htmlspecialchars($rdata, ENT_QUOTES);
+						$rdata = htmlspecialchars($rdata, ENT_QUOTES, _CHARSET);
 						$rdata = preg_replace('/\t/', '&nbsp;&nbsp;&nbsp;&nbsp;', $rdata); //\sだと改行も含まれてしまう。
 						$rdata = nl2br($rdata);
 						break;
