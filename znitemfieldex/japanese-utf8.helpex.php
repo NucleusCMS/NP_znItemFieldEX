@@ -1,10 +1,11 @@
+<?php $url = str_replace('<','',$_GET["url"]);?>
 <p>
 [ヘルプ一覧]<br />
 <ol>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help">プラグイン概要・設置方法などについて</a></li>
+	<li><a href="<?php echo $url; ?>?action=help">プラグイン概要・設置方法などについて</a></li>
 	<li><span style="background-color: #eef; font-weight: bold;">拡張テーブル・拡張フィールドついて</span></li>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help&p=template">テンプレートへの記述について</a></li>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help&p=skin">スキンへの記述について</a></li>
+	<li><a href="<?php echo $url; ?>?action=help&p=template">テンプレートへの記述について</a></li>
+	<li><a href="<?php echo $url; ?>?action=help&p=skin">スキンへの記述について</a></li>
 </ol>
 </p>
 
@@ -58,7 +59,7 @@
 </div></div></div>
 <ol>
 	<li>フィールドには、複数のタイプがあります。<br />
-		フィールドを追加したら、<img src="<?php echo $_GET["url"]; ?>edit.gif" title="編集" />（編集）から、フィールドの設定を行ってください。設定内容は以下の通りです。<br />
+		フィールドを追加したら、<img src="<?php echo $url; ?>edit.gif" title="編集" />（編集）から、フィールドの設定を行ってください。設定内容は以下の通りです。<br />
 		（表2.）<br />
 		<a name="ftype"></a>
 		<table style="width: auto;">
@@ -109,13 +110,13 @@
 		<br />
 	</li>
 	<li>別テーブルから結合先に設定されているTextタイプフィールドには、フィールド一覧のタイプ項目に、下記鎖マークが付き、結合元フィールド編集ページへのリンクが表示されます。<br />
-		<img src="<?php echo $_GET["url"]; ?>help_link_orig.gif" />
+		<img src="<?php echo $url; ?>help_link_orig.gif" />
 	</li>
 	<li>フィールド一覧の、Selectタイプフィールドの設定項目には、結合先フィールド編集ページへのリンクが表示されます。<br />
-		<img src="<?php echo $_GET["url"]; ?>help_link_to.gif" />
+		<img src="<?php echo $url; ?>help_link_to.gif" />
 	</li>
 	<li>フィールド一覧の、フィールド記述項目には、テンプレートやスキンで指定する際の（-&gt;で繋がった）フィールド名が自動生成されます。「アイテム拡張用テーブル」と繋がっていない場合、頭に「リンク切れアイコン」が付きます。<br />
-		<img src="<?php echo $_GET["url"]; ?>help_relation.gif" />
+		<img src="<?php echo $url; ?>help_relation.gif" />
 	</li>
 </ol>
 
@@ -123,12 +124,12 @@
 <h6>レコードについて</h6>
 </div></div></div>
 <ol>
-	<li>リレーションを設定しているフィールド（Selectタイプ）には、<img src="<?php echo $_GET["url"]; ?>link.gif" align="top" />が付きます。<br />
+	<li>リレーションを設定しているフィールド（Selectタイプ）には、<img src="<?php echo $url; ?>link.gif" align="top" />が付きます。<br />
 		<ul>
-		<li>一覧のタイトル部分の<img src="<?php echo $_GET["url"]; ?>link.gif" align="top" />をクリックすると、リレーション先のフィールドの編集画面に飛びます。</li>
-		<li>設定していたリレーション先が、変更・削除されてしまった場合、<img src="<?php echo $_GET["url"]; ?>link_dele.gif" align="top" />が表示されます。</li>
+		<li>一覧のタイトル部分の<img src="<?php echo $url; ?>link.gif" align="top" />をクリックすると、リレーション先のフィールドの編集画面に飛びます。</li>
+		<li>設定していたリレーション先が、変更・削除されてしまった場合、<img src="<?php echo $url; ?>link_dele.gif" align="top" />が表示されます。</li>
 		<li>レコードには、リレーション先のTextタイプフィールドのデータが表示されます。</li>
-		<li>リレーション先にデータがないレコードには、<img src="<?php echo $_GET["url"]; ?>link.gif" align="top" />のみが表示されます。</li>
+		<li>リレーション先にデータがないレコードには、<img src="<?php echo $url; ?>link.gif" align="top" />のみが表示されます。</li>
 		</ul>
 		<br />
 	</li>

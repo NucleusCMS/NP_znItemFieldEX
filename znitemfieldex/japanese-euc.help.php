@@ -1,10 +1,11 @@
+<?php $url = str_replace('<','',$_GET["url"]);?>
 <p>
 [ヘルプ一覧]<br />
 <ol>
 	<li><span style="background-color: #eef; font-weight: bold;">プラグイン概要・設置方法などについて</span></li>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help&p=ex">拡張テーブル・拡張フィールドついて</a></li>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help&p=template">テンプレートへの記述について</a></li>
-	<li><a href="<?php echo $_GET["url"]; ?>?action=help&p=skin">スキンへの記述について</a></li>
+	<li><a href="<?php echo $url; ?>?action=help&p=ex">拡張テーブル・拡張フィールドついて</a></li>
+	<li><a href="<?php echo $url; ?>?action=help&p=template">テンプレートへの記述について</a></li>
+	<li><a href="<?php echo $url; ?>?action=help&p=skin">スキンへの記述について</a></li>
 </ol>
 </p>
 
@@ -14,7 +15,7 @@
 <h6>プラグインの概要</h6>
 </div></div></div>
 
-<img src="<?php echo $_GET["url"]; ?>znItemFieldEX.gif" align="left" style="margin: 0 8px 3px 0" />
+<img src="<?php echo $url; ?>znItemFieldEX.gif" align="left" style="margin: 0 8px 3px 0" />
 アイテムのフィールド（項目）を拡張するプラグインです。<br />
 タイトル、本文、続き、日付、カテゴリ、投稿者などの、Nucleusの標準機能として用意されているアイテムの項目以外に、好きな項目を追加し、拡張することができます。フィールドの拡張は、ブログ単位で行います。（拡張テーブルを作成し、リレーションさせることも可能です。）<br />
 追加できるフィールドのタイプは、以下の通りです。<br />
@@ -52,7 +53,7 @@
 	<tr>
 		<td>Select</td>
 		<td>「拡張した別テーブルの内容」を選択（リレーション機能）<br />
-			詳細は、<a href="<?php echo $_GET["url"]; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドついて」</a>を参照ください。
+			詳細は、<a href="<?php echo $url; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドついて」</a>を参照ください。
 		</td>
 	</tr>
 </table>
@@ -63,15 +64,15 @@
 
 <ol>
 	<li>プラグイン管理ページにて、拡張フィールドを設定<br />
-		詳細は、<a href="<?php echo $_GET["url"]; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドついて」</a>を参照ください。<br />
+		詳細は、<a href="<?php echo $url; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドついて」</a>を参照ください。<br />
 		<br />
 	</li>
 	<li>プラグイン管理ページにて、拡張テーブルを設定（リレーション機能を使う場合のみ）<br />
-		詳細は、<a href="<?php echo $_GET["url"]; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドについて」</a>を参照ください。<br />
+		詳細は、<a href="<?php echo $url; ?>?action=help&p=ex">「拡張テーブル・拡張フィールドについて」</a>を参照ください。<br />
 		<br />
 	</li>
 	<li>テンプレート編集<br />
-		詳細は、<a href="<?php echo $_GET["url"]; ?>?action=help&p=template">「テンプレートへの記述について」</a>を参照ください。<br />
+		詳細は、<a href="<?php echo $url; ?>?action=help&p=template">「テンプレートへの記述について」</a>を参照ください。<br />
 		<br />
 	</li>
 	<li>アイテム投稿（追加・編集）にて、各アイテムごとにデータを入力<br />
