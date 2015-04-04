@@ -1025,7 +1025,7 @@ h6 {
 				}
 			}
 			$tgtFieldWhere = implode(",", $tgtField);
-			$searchclass   = & new SEARCH( (requestVar('query')) );
+			$searchclass   = new SEARCH( (requestVar('query')) );
 			$where         = $searchclass->boolean_sql_where($tgtFieldWhere);
 			$where         = strtr($where, array('i.zzz.'=> ''));
 		}
