@@ -1156,7 +1156,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 				}
 				$rdata = (!$itemid and $query) ? highlight($rdata, $expression, $this->highlight) : $rdata;
 				$temp->body = &$rdata;
-				$manager->notify('PreItem', array('item' => &$temp));
+				$params = array('item' => &$temp);
+				$manager->notify('PreItem', $params);
 				
 				//BODYACTIONS
 				global $currentTemplateName;
@@ -1484,7 +1485,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 		} else {
 			global $blog, $blogid;
 		}
-		$manager->notify('PreBlogContent',array('blog' => &$blog, 'type' => $type));
+		$params = array('blog' => &$blog, 'type' => $type);
+		$manager->notify('PreBlogContent',$params);
 		
 		$blogid            = intval($blogid);
 		$boolMarkArray     = array();         //論理演算子保持用
@@ -1598,7 +1600,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 		
 		//echo $sqlquery.'<br />';
 		$blog->showUsingQuery($template, $sqlquery, '', 1, 1);
-		$manager->notify('PostBlogContent',array('blog' => &$blog, 'type' => $type));
+		$params = array('blog' => &$blog, 'type' => $type);
+		$manager->notify('PostBlogContent',$params);
 	}
 	/**
 	 * スキン：ITEMモード
