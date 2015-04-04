@@ -803,9 +803,9 @@ h6 {
 					// get collection list
 					$collections = MEDIA::getCollectionList();
 					foreach ($collections as $dirname => $description) {
-						echo '<option value="'.htmlspecialchars($dirname).'"';
+						echo '<option value="'.htmlspecialchars($dirname, ENT_QUOTES, _CHARSET).'"';
 						if ($dirname == $currentCollection) echo ' selected=" selected"';
-						echo '>'.htmlspecialchars($description).'</option>';
+						echo '>'.htmlspecialchars($description, ENT_QUOTES, _CHARSET).'</option>';
 					}
 					echo '</select><br />';
 					echo 'UI:<input type="radio" name="fsetting_i" value="Image" id="IMAGE" '.(($fsetting[1]=="Image") ? 'checked="checked"':'').' /><label for="IMAGE">IMAGE MODE</label>';
@@ -820,7 +820,7 @@ h6 {
 					break;
 				case "Radio": //
 				case "Checkbox": //
-					echo '<textarea name="fsetting_c" rows="8">'.htmlspecialchars($row->fsetting).'</textarea>';
+					echo '<textarea name="fsetting_c" rows="8">'.htmlspecialchars($row->fsetting, ENT_QUOTES, _CHARSET).'</textarea>';
 					break;
 				case "Select":   //[Text]
 					//[table][field]
