@@ -1182,7 +1182,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 				$actions        = new ITEMACTIONS($blog);
 				$templateParser = new PARSER(array('image','media','popup'), $actions);
 				$actions->setParser($templateParser);
-				$actions->setCurrentItem(&$item);
+				$actions->setCurrentItem($item);
 				$actions->setTemplate($template);
 				ob_start();
 				$templateParser->parse($rdata);
@@ -1319,7 +1319,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 				$actions        = new ITEMACTIONS($blog);
 				$templateParser = new PARSER($actions->getDefinedActions(), $actions);
 				$actions->setParser($templateParser);
-				$actions->setCurrentItem(&$item);
+				$actions->setCurrentItem($item);
 				//$actions->setTemplate($itemTemplate);
 				
 				ob_start();
@@ -1618,7 +1618,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 	{
 		foreach($data['blogs'] as $blogid)
 		{
-			$array = $this->_PreSearchResults(&$data, $blogid);
+			$array = $this->_PreSearchResults($data, $blogid);
 			$data['items'] = array_unique(array_merge($data['items'], $array));
 		}
 	}
