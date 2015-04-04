@@ -1163,8 +1163,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 				global $currentTemplateName;
 				$item     = $this->getitem($itemid); //アイテム情報を得る。
 				$template = & $manager->getTemplate($currentTemplateName);
-				$actions  = & new BODYACTIONS($blog);
-				$parser   = & new PARSER($actions->getDefinedActions(), $actions);
+				$actions  = new BODYACTIONS($blog);
+				$parser   = new PARSER($actions->getDefinedActions(), $actions);
 				$actions->setTemplate($template);
 				//$actions->setHighlight($this->strHighlight);
 				$actions->setCurrentItem($item);
@@ -1179,8 +1179,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 				global $currentTemplateName;
 				$template       = & $manager->getTemplate($currentTemplateName);
 				$item           = $this->getitem($itemid); //
-				$actions        = & new ITEMACTIONS($blog);
-				$templateParser = & new PARSER(array('image','media','popup'), $actions);
+				$actions        = new ITEMACTIONS($blog);
+				$templateParser = new PARSER(array('image','media','popup'), $actions);
 				$actions->setParser($templateParser);
 				$actions->setCurrentItem(&$item);
 				$actions->setTemplate($template);
@@ -1316,8 +1316,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 			{
 				//Nucleus標準テンプレートを使用する設定の場合のみ実行
 				$item           = $this->getitem($itemid); //アイテム情報を得る。
-				$actions        = & new ITEMACTIONS($blog);
-				$templateParser = & new PARSER($actions->getDefinedActions(), $actions);
+				$actions        = new ITEMACTIONS($blog);
+				$templateParser = new PARSER($actions->getDefinedActions(), $actions);
 				$actions->setParser($templateParser);
 				$actions->setCurrentItem(&$item);
 				//$actions->setTemplate($itemTemplate);
@@ -1682,7 +1682,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 		}//end ターゲット単位（テンプレート）
 		
 		$tgtFieldWhere = implode(",", $tgtField);//★echo '%%%% '.$tgtFieldWhere.' %%%%';
-		$searchclass   = & new SEARCH($query);
+		$searchclass   = new SEARCH($query);
 		$where         = $searchclass->boolean_sql_where($tgtFieldWhere);
 		$where         = strtr($where, array('i.zzz.'=> ''));
 		$sqlquery     .= ' WHERE i.idraft = 0 AND i.itime<='.mysqldate($blog->getCorrectTime()).' AND i.iblog IN ('.implode(',', $blogs).') AND '.$where;
