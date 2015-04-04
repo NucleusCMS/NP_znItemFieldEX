@@ -193,14 +193,14 @@ h6 {
 	 * 
 	 */
 	function action_t_overview_bnc(){
-		$qid = mysql_query("SELECT * FROM ".$this->table_tables." WHERE ttype=0");
+		$qid = sql_query("SELECT * FROM ".$this->table_tables." WHERE ttype=0");
 		if ($qid){
-			while($row = mysql_fetch_array($qid)){
+			while($row = sql_fetch_array($qid)){
 				//id
 				$blogname = getBlogNameFromID( substr($row['tname'], 6) );
 				if ($blogname != $row['tdesc']){
 					//
-					mysql_query("UPDATE ".$this->table_tables." SET tdesc='".$blogname."' WHERE tid=".$row['tid']);
+					sql_query("UPDATE ".$this->table_tables." SET tdesc='".$blogname."' WHERE tid=".$row['tid']);
 				}
 			}
 		}
@@ -221,9 +221,9 @@ h6 {
 			<tbody>
 <?php
 		$ttype = array(""._ZNIFEX45."", ""._ZNIFEX46."");
-		$qid = mysql_query("SELECT * FROM ".$this->table_tables);
+		$qid = sql_query("SELECT * FROM ".$this->table_tables);
 		if ($qid){
-			while($row = mysql_fetch_array($qid)){
+			while($row = sql_fetch_array($qid)){
 				$cf = $this->countField($row['tid']);
 				$cr = $this->countRecord($row['tname']);
 				echo '<tr onmouseover="focusRow(this);" onmouseout="blurRow(this);">';
@@ -307,16 +307,16 @@ h6 {
 		//NG
 		if ( $this->table_valid_check(requestVar('tname')) ){
 			//table_tableidAUTO_INCREMENT
-			mysql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." ( 
+			sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." ( 
 				`id`  INT(11) NOT NULL AUTO_INCREMENT, 
 				PRIMARY KEY (id)
 				)");
 			//table_tables
 			$sql_str = "INSERT INTO ".$this->table_tables." SET ".
 			"tname ='".requestVar('tname')                     ."', ".
-			"tdesc ='".mysql_escape_string(requestVar('tdesc'))."', ".
+			"tdesc ='".sql_escape_string(requestVar('tdesc'))."', ".
 			"ttype = 1";
-			mysql_query($sql_str);
+			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX52.'</b>';
 			$this->formRefreshFlag = true;
 		} else $msg = '<b style="color: #090;">'._ZNIFEX53.'</b>';
@@ -327,8 +327,8 @@ h6 {
 	 */
 	function action_tedit($msg = '') {
 		global $manager;
-		$qid = mysql_query("SELECT * FROM ".$this->table_tables." WHERE tid=".intRequestVar('tid'));
-		if ($row = mysql_fetch_object($qid)){
+		$qid = sql_query("SELECT * FROM ".$this->table_tables." WHERE tid=".intRequestVar('tid'));
+		if ($row = sql_fetch_object($qid)){
 			$this->start('tedit', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
@@ -373,13 +373,13 @@ h6 {
 		if ( $this->table_valid_check(requestVar('tname'), intRequestVar('tid')) ){
 			//table_table()
 			$sql_str = "ALTER TABLE `".$this->table_table.requestVar('tname_o')."` RENAME `".$this->table_table.requestVar('tname')."`";
-			if (requestVar('tname_o') != requestVar('tname')) mysql_query($sql_str);
+			if (requestVar('tname_o') != requestVar('tname')) sql_query($sql_str);
 			//table_tables
 			$sql_str = "UPDATE ".$this->table_tables." SET ".
 			"tname ='".requestVar('tname') ."', ".
-			"tdesc ='".mysql_escape_string(requestVar('tdesc'))."' ".
+			"tdesc ='".sql_escape_string(requestVar('tdesc'))."' ".
 			"WHERE tid=".intRequestVar('tid');
-			mysql_query($sql_str);
+			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX57.'</b>';
 			$this->formRefreshFlag = true;
 		} else $msg = '<b style="color: #090;">'._ZNIFEX53.'</b>';
@@ -413,9 +413,9 @@ h6 {
 	 */
 	function action_tdeleteconfirm() {
 		global $manager;
-		mysql_query("DELETE FROM ".$this->table_tables." WHERE tid=".intRequestVar('tid'));  //table_tables
-		mysql_query("DELETE FROM ".$this->table_fields." WHERE ftid=".intRequestVar('tid')); //table_fields
-		mysql_query("DROP table IF EXISTS ".$this->table_table.requestVar('tname'));         //table_table
+		sql_query("DELETE FROM ".$this->table_tables." WHERE tid=".intRequestVar('tid'));  //table_tables
+		sql_query("DELETE FROM ".$this->table_fields." WHERE ftid=".intRequestVar('tid')); //table_fields
+		sql_query("DROP table IF EXISTS ".$this->table_table.requestVar('tname'));         //table_table
 		$this->action_t_overview('<b style="color: #090;">'.requestVar('tname').''._ZNIFEX59.'</b>');
 	}
 	/**
@@ -426,8 +426,8 @@ h6 {
 	//
 	function table_valid_check($tname, $tid = 0){
 		if (strlen($tname) == 0)                              return false; //
-		$qid = mysql_query("SELECT * FROM ".$this->table_tables." WHERE tid<>".$tid." AND tname='".$tname."'");
-		if ($qid) if (mysql_num_rows($qid) > 0)               return false; //
+		$qid = sql_query("SELECT * FROM ".$this->table_tables." WHERE tid<>".$tid." AND tname='".$tname."'");
+		if ($qid) if (sql_num_rows($qid) > 0)               return false; //
 		if (preg_match("/^[a-z_]+[a-z0-9_]*$/", $tname) == 0) return false; //
 		return true;
 	}
@@ -467,9 +467,9 @@ h6 {
 				<td>--</td>
 			</tr>
 <?php
-		$qid = mysql_query("SELECT * FROM ".$this->table_fields." WHERE ftid='".intRequestVar('tid')."' ORDER BY forder");
+		$qid = sql_query("SELECT * FROM ".$this->table_fields." WHERE ftid='".intRequestVar('tid')."' ORDER BY forder");
 		if ($qid){
-			while($row = mysql_fetch_array($qid)){
+			while($row = sql_fetch_array($qid)){
 				$url_para = $this->url."index.php?";
 				echo '<tr onmouseover="focusRow(this);" onmouseout="blurRow(this);">';
 				echo '<td>'.$row['fname']   .'</td>';
@@ -481,10 +481,10 @@ h6 {
 					//Select
 					$origin  = array();
 					$sql_str = "SELECT * FROM ".$this->table_fields." WHERE fsetting='".$row['fid']."' AND ftype='Select'";
-					$qid_sel = mysql_query($sql_str);
+					$qid_sel = sql_query($sql_str);
 					if ($qid_sel){
-						if (mysql_num_rows($qid_sel)) echo ' <img src="'.$this->url.'link_orig.gif" align="top" width="16" height="16" /> ';
-						while ($row_sel = mysql_fetch_array($qid_sel)){
+						if (sql_num_rows($qid_sel)) echo ' <img src="'.$this->url.'link_orig.gif" align="top" width="16" height="16" /> ';
+						while ($row_sel = sql_fetch_array($qid_sel)){
 							$tname = $this->plug->getTableAboutFromID('tname', $row_sel["ftid"]);
 							$origin[] = '<a href="'.$this->url.'?action=fedit'.
 								'&amp;fid='  .$row_sel["fid"].
@@ -652,13 +652,13 @@ h6 {
 		$tableArray[] = $ftid;		
 		if ($this->plug->getTableAboutFromID('ttype', $ftid) == 0) return ","."[$fid]".$fname; //fname
 		//ftidText
-		$qid_text = mysql_query("SELECT * FROM ".$this->table_fields." WHERE ftype='Text' AND ftid='".$ftid."'");
+		$qid_text = sql_query("SELECT * FROM ".$this->table_fields." WHERE ftype='Text' AND ftid='".$ftid."'");
 		if ($qid_text){
-			while($row_text = mysql_fetch_array($qid_text)){//Text
+			while($row_text = sql_fetch_array($qid_text)){//Text
 				//Select
-				$qid_select = mysql_query("SELECT * FROM ".$this->table_fields." WHERE ftype='Select' AND fsetting='".$row_text["fid"]."'");
+				$qid_select = sql_query("SELECT * FROM ".$this->table_fields." WHERE ftype='Select' AND fsetting='".$row_text["fid"]."'");
 				if ($qid_select){
-					while ($row_select = mysql_fetch_array($qid_select)){//
+					while ($row_select = sql_fetch_array($qid_select)){//
 						$ret = $this->getTemplateParameter($row_select["fid"], $row_select["fname"], $row_select["ftid"], $loop, $tableArray)."-&gt;"."[$fid]".$fname . $ret;
 					}
 				}
@@ -713,12 +713,12 @@ h6 {
 			//table_fields
 			$sql_str = "INSERT INTO ".$this->table_fields." SET ".
 			"ftid    = ".intRequestVar('tid')                     ." , ".
-			"fname   ='".mysql_escape_string(requestVar('fname') )."', ".
+			"fname   ='".sql_escape_string(requestVar('fname') )."', ".
 			"forder  = ".intRequestVar('forder')                  ." , ".
-			"flabel  ='".mysql_escape_string(requestVar('flabel'))."', ".
+			"flabel  ='".sql_escape_string(requestVar('flabel'))."', ".
 			"ftype   ='".requestVar('ftype')                      ."', ".
-			"fsetting='".mysql_escape_string($fsetting)           ."'  ";
-			mysql_query($sql_str);
+			"fsetting='".sql_escape_string($fsetting)           ."'  ";
+			sql_query($sql_str);
 			$this->deleteRelationSql();
 			$msg = '<b style="color: #090;">'._ZNIFEX77.'</b>';
 			$this->formRefreshFlag = true;
@@ -731,8 +731,8 @@ h6 {
 	function action_fedit($msg = '') {
 		global $DIR_MEDIA;
 		global $manager;
-		$qid = mysql_query("SELECT * FROM ".$this->table_fields." WHERE fid=".intRequestVar('fid'));
-		if ($row = mysql_fetch_object($qid)){
+		$qid = sql_query("SELECT * FROM ".$this->table_fields." WHERE fid=".intRequestVar('fid'));
+		if ($row = sql_fetch_object($qid)){
 			$this->start('fedit', 0, $msg);
 ?>
 			<div class="t01"><div class="t02"><div class="t03">
@@ -826,10 +826,10 @@ h6 {
 					//[table][field]
 					$sql_str = "SELECT f.fid, f.fname, t.tname FROM ".$this->table_fields." AS f, ".$this->table_tables." AS t ".
 					"WHERE t.tid=f.ftid AND f.ftype='Text' AND f.ftid<>".intRequestVar('tid')." AND t.ttype<>0";
-					$qid_sel = mysql_query($sql_str);
+					$qid_sel = sql_query($sql_str);
 					echo '<select name="fsetting_s">';
 					if ($qid_sel){
-						while($row_sel = mysql_fetch_array($qid_sel)){
+						while($row_sel = sql_fetch_array($qid_sel)){
 							echo '<option value="'.$row_sel["fid"].'" '.(($row->fsetting == $row_sel["fid"]) ? "selected" : "").'>';
 							echo '['.$row_sel["tname"].']'._ZNIFEX67.'['.$row_sel["fname"].']'._ZNIFEX66.'</option>';
 						}
@@ -884,16 +884,16 @@ h6 {
 				"Radio"    => requestVar('fsetting_c'),
 				"Select"   => requestVar('fsetting_s'),
 			);
-			if (requestVar('fname_o') != requestVar('fname')) mysql_query($sql_str.$ftypeArray[requestVar('ftype')]);
+			if (requestVar('fname_o') != requestVar('fname')) sql_query($sql_str.$ftypeArray[requestVar('ftype')]);
 			//table_fields
 			$sql_str = "UPDATE ".$this->table_fields." SET ".
-			"fname   ='".mysql_escape_string(requestVar('fname'))                ."', ".
+			"fname   ='".sql_escape_string(requestVar('fname'))                ."', ".
 			"forder  = ".intRequestVar('forder')                                 ." , ".
-			"flabel  ='".mysql_escape_string(requestVar('flabel'))               ."', ".
+			"flabel  ='".sql_escape_string(requestVar('flabel'))               ."', ".
 			"ftype   ='".requestVar('ftype')                                     ."', ".
-			"fsetting='".mysql_escape_string($fsettingArray[requestVar('ftype')])."'  ".
+			"fsetting='".sql_escape_string($fsettingArray[requestVar('ftype')])."'  ".
 			"WHERE fid=".intRequestVar('fid');
-			mysql_query($sql_str);
+			sql_query($sql_str);
 			$this->deleteRelationSql();
 			$msg = '<b style="color: #090;">'._ZNIFEX57.'</b>';
 			$this->formRefreshFlag = true;
@@ -930,9 +930,9 @@ h6 {
 	function action_fdeleteconfirm() {
 		global $manager;
 		//table_fields
-		mysql_query("DELETE FROM ".$this->table_fields." WHERE fid=".intRequestVar('fid'));
+		sql_query("DELETE FROM ".$this->table_fields." WHERE fid=".intRequestVar('fid'));
 		//table_table
-		mysql_query("ALTER TABLE `".$this->table_table.requestVar('tname')."` DROP f__".requestVar('fname'));
+		sql_query("ALTER TABLE `".$this->table_table.requestVar('tname')."` DROP f__".requestVar('fname'));
 		$this->action_f_overview('<b style="color: #090;">'._ZNIFEX91.'</b>');
 	}
 	/**
@@ -942,10 +942,10 @@ h6 {
 	//
 	//
 	function field_valid_check($tid, $fname, $flabel, $fid = 0){
-		$qid = mysql_query("SELECT * FROM ".$this->table_fields." WHERE ftid=".$tid." AND fid<>".$fid." AND (fname='".$fname."' OR flabel='".$flabel."')");
+		$qid = sql_query("SELECT * FROM ".$this->table_fields." WHERE ftid=".$tid." AND fid<>".$fid." AND (fname='".$fname."' OR flabel='".$flabel."')");
 		if ($fname == "id")                                   return false; //"id"
 		if (strlen($fname) == 0 or strlen($flabel) == 0)      return false; //
-		if ($qid) if (mysql_num_rows($qid) > 0)               return false; //
+		if ($qid) if (sql_num_rows($qid) > 0)               return false; //
 		if (preg_match("/^[a-z_]+[a-z0-9_]*$/", $fname) == 0) return false; //
 		return true;
 	}
@@ -955,7 +955,7 @@ h6 {
 	//
 	//))
 	function deleteRelationSql(){
-		mysql_query("DELETE FROM ".$this->table_sql_cache." WHERE 1");
+		sql_query("DELETE FROM ".$this->table_sql_cache." WHERE 1");
 	}
 	/**
 	 * ()
@@ -981,8 +981,8 @@ h6 {
 		} else $fieldName .= '<th>relation id</th>';
 		$asName      = 1;
 		$sql_str     = "SELECT * FROM ".$this->table_fields." WHERE ftid='".intRequestVar('tid')."' ORDER BY forder";
-		$qid_field   = mysql_query($sql_str);
-		while ($row_field = mysql_fetch_array($qid_field)){ //
+		$qid_field   = sql_query($sql_str);
+		while ($row_field = sql_fetch_array($qid_field)){ //
 			if ($row_field["ftype"] == "Select" and $row_field["fsetting"]){
 				//Select
 				$row_set = $this->plug->getFieldDataFromFieldId($row_field["fsetting"]); //
@@ -1034,8 +1034,8 @@ h6 {
 		//
 		$actionUrl   = $this->url.'index.php?action=r_overview&amp;tname='.requestVar('tname');
 		$actionUrl  .= '&amp;tid='.intRequestVar('tid').'&amp;query='.requestVar('query').'&amp;p=';
-		$qid_record  = mysql_query($sql_str);
-		$recordRows  = ($qid_record) ? mysql_num_rows($qid_record) : 0; //
+		$qid_record  = sql_query($sql_str);
+		$recordRows  = ($qid_record) ? sql_num_rows($qid_record) : 0; //
 		$pageRows    = (int) $this->plug->getOption('pagerows');        //30
 		$currentPage = (!intRequestVar('p')) ? 1 : intRequestVar('p');  //
 		$totalPeges  = ceil($recordRows / $pageRows);                   //
@@ -1066,9 +1066,9 @@ h6 {
 			<thead><tr><?php echo $fieldName; ?><th colspan='2' nowrap="nowrap"><?php echo _ZNIFEX42; ?></th></tr></thead>
 			<tbody>
 <?php
-		$qid_record = mysql_query($sql_str);//
+		$qid_record = sql_query($sql_str);//
 		if ($qid_record){
-			while ($row_record = mysql_fetch_array($qid_record)){
+			while ($row_record = sql_fetch_array($qid_record)){
 				echo '<tr onmouseover="focusRow(this);" onmouseout="blurRow(this);">';
 				foreach ($fieldsArray as $key => $value){ //
 					//
@@ -1192,7 +1192,7 @@ h6 {
 	function action_rdeleteconfirm() {
 		global $manager;
 		//table_table
-		mysql_query("DELETE FROM ".$this->table_table.requestVar('tname')." WHERE id=".intRequestVar('id'));
+		sql_query("DELETE FROM ".$this->table_table.requestVar('tname')." WHERE id=".intRequestVar('id'));
 		$this->action_r_overview('<b style="color: #090;">'._ZNIFEX104.'</b>');
 	}
 	/**
@@ -1222,7 +1222,7 @@ h6 {
 	function action_rdeleteconfirm_all(){
 		global $manager;
 		//table_table
-		mysql_query("DELETE FROM ".$this->table_table.requestVar('tname')." WHERE 1");
+		sql_query("DELETE FROM ".$this->table_table.requestVar('tname')." WHERE 1");
 		$this->action_r_overview('<b style="color: #090;">'._ZNIFEX106.'</b>');
 	}
 	/**

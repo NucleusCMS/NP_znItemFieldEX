@@ -6,7 +6,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function getURL()               { return 'http://wa.otesei.com/NP_znItemFieldEX'; }
 	function getVersion()           { return '0.12.8alpha'; }
 	function getDescription()       { return 'ブログごとに設定したフィールドを、アイテムに追加するプラグイン'; }
-	function supportsFeature($w)    { return ($w == 'SqlTablePrefix') ? 1 : 0; }
+	function supportsFeature($w)    { return in_array ($w, array ('SqlTablePrefix', 'SqlApi')); }
+	function getMinNucleusVersion() { return '350';}
 	function hasAdminArea()         { return 1; }
 	function getTableList()
 	{
@@ -15,7 +16,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 		$tableList[] = $this->table_fields;
 		$tableList[] = $this->table_sql_cache;
 		$qid         = sql_query("SELECT tname FROM ".$this->table_tables);
-		while ($row = mysql_fetch_object($qid)) $tableList[] = $this->table_table . $row->tname;
+		while ($row = sql_fetch_object($qid)) $tableList[] = $this->table_table . $row->tname;
 		return $tableList;
 	}
 	function getEventList()
@@ -60,7 +61,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 		$this->createOption('verCheck'       , '最新バージョンの確認をしますか？', 'yesno', 'no'); //version check //vc
 		//ブログoption
 		$this->createBlogOption('searchField', '検索対象となるフィールド', "textarea", "");
-		mysql_query("CREATE TABLE IF NOT EXISTS ".$this->table_tables.
+		sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_tables.
 			" ( 
 			`tid`      INT(11)      NOT NULL AUTO_INCREMENT, 
 			`tname`    VARCHAR(255) NOT NULL, 
@@ -69,7 +70,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 			PRIMARY KEY (tid), 
 			KEY tname (tname)
 			)");
-		mysql_query("CREATE TABLE IF NOT EXISTS ".$this->table_fields.
+		sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_fields.
 			" ( 
 			`fid`      INT(11)      NOT NULL AUTO_INCREMENT, 
 			`ftid`     INT(11)      NOT NULL DEFAULT '0', 
@@ -81,7 +82,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 			PRIMARY KEY (fid), 
 			KEY fname (fname)
 			)");
-		mysql_query("CREATE TABLE IF NOT EXISTS ".$this->table_sql_cache.
+		sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_sql_cache.
 			" ( 
 			`sid`       INT(11)      NOT NULL AUTO_INCREMENT, 
 			`sbid`      INT(11)      NOT NULL DEFAULT '0', 
@@ -94,8 +95,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 			KEY spath (spath)
 			)");
 		//すでにあるブログの数だけテーブルを作成
-		$qid = mysql_query("SELECT bnumber FROM ".sql_table('blog'));
-		while ($row = mysql_fetch_object($qid)) $this->createItemTable($row->bnumber);
+		$qid = sql_query("SELECT bnumber FROM ".sql_table('blog'));
+		while ($row = sql_fetch_object($qid)) $this->createItemTable($row->bnumber);
 		
 		//テーブル構造変更
 		$this->tableUpgrade();
@@ -111,11 +112,11 @@ class NP_znItemFieldEX extends NucleusPlugin
 		
 		//ブログ用idカラム
 		$result = sql_query("SELECT bnumber FROM ".sql_table('blog'));
-		while ($blog = mysql_fetch_object($result)) sql_query("ALTER TABLE ".$this->table_table."item_b".$blog->bnumber." ALTER id SET DEFAULT '0'");
+		while ($blog = sql_fetch_object($result)) sql_query("ALTER TABLE ".$this->table_table."item_b".$blog->bnumber." ALTER id SET DEFAULT '0'");
 		
 		//ブログ用テーブルとリレーション用テーブル内の、Number, Selectタイプ拡張フィールド
 		$qid = sql_query("SELECT ftid, fname FROM ".$this->table_fields." WHERE ftype='Number' OR ftype='Select'");
-		while ($field = mysql_fetch_object($qid))
+		while ($field = sql_fetch_object($qid))
 		{
 			//このフィールドのテーブル
 			$tgtTableName = $this->table_table.quickQuery("SELECT tname AS result FROM ".$this->table_tables." WHERE tid=".intval($field->ftid));
@@ -127,8 +128,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 		if ($this->getOption('flg_table_drop') == 'yes')
 		{
 			//テーブルを削除
-			$qid = mysql_query("SELECT tname FROM ".$this->table_tables);
-			while ($row = mysql_fetch_object($qid)) $this->delete_znItemFieldEX_Table($row->tname);
+			$qid = sql_query("SELECT tname FROM ".$this->table_tables);
+			while ($row = sql_fetch_object($qid)) $this->delete_znItemFieldEX_Table($row->tname);
 			sql_query("DROP table IF EXISTS ". $this->table_tables);
 			sql_query("DROP table IF EXISTS ". $this->table_fields);
 			sql_query("DROP table IF EXISTS ". $this->table_sql_cache);
@@ -174,20 +175,20 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function createItemTable($blogid)
 	{
 		//アイテム拡張用テーブルのidは、AUTO_INCREMENTでない。
-		mysql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table."item_b".$blogid." ( 
+		sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table."item_b".$blogid." ( 
 			`id`  INT(11) NOT NULL DEFAULT '0', 
 			PRIMARY KEY (id)
 			)");
 		//再インストール時に、前のデータが残っている場合は、初期レコードを追加しない。
 		$sql_str = "SELECT tname FROM ".$this->table_tables." WHERE tname='item_b".$blogid."'";
-		$qid = mysql_query($sql_str);
-		if (!($qid and @mysql_num_rows($qid) > 0))
+		$qid = sql_query($sql_str);
+		if (!($qid and @sql_num_rows($qid) > 0))
 		{
 			$sql_str = "INSERT INTO ".$this->table_tables." SET ".
 			"tname ='item_b".$blogid."', ".
 			"tdesc ='".getBlogNameFromID($blogid)."', ".
 			"ttype = 0";
-			mysql_query($sql_str);
+			sql_query($sql_str);
 		}
 	}
 	/**
@@ -195,8 +196,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	 */
 	function delete_znItemFieldEX_Table($tname)
 	{
-		mysql_query("DROP table IF EXISTS ".$this->table_table.$tname);
-		mysql_query("DELETE FROM ".$this->table_tables." WHERE tname='".$tname."'");
+		sql_query("DROP table IF EXISTS ".$this->table_table.$tname);
+		sql_query("DELETE FROM ".$this->table_tables." WHERE tname='".$tname."'");
 	}
 	/**
 	 * アドミン追加・変更フォーム
@@ -218,14 +219,14 @@ class NP_znItemFieldEX extends NucleusPlugin
 		echo '<tr><th colspan="2">znItemFieldEX</th></tr>';
 		//拡張テーブルのデータ取得（何らかのトラブルで存在しない場合の処理も必要★★★
 		$sql_str = "SELECT * FROM ".$this->table_table.$tname." WHERE id=".$itemid;
-		$qid = mysql_query($sql_str);
-		if ($qid and @mysql_num_rows($qid) > 0) $row_item = mysql_fetch_array($qid);
+		$qid = sql_query($sql_str);
+		if ($qid and @sql_num_rows($qid) > 0) $row_item = sql_fetch_array($qid);
 		
 		$ftid = $this->getIDFromTableName($tname);
 		$sql_str = "SELECT * FROM ".$this->table_fields." WHERE ftid='".$ftid."' ORDER BY forder";
-		$qid = mysql_query($sql_str);
+		$qid = sql_query($sql_str);
 		$tabindex = 10000;
-		while ($row = mysql_fetch_array($qid))
+		while ($row = sql_fetch_array($qid))
 		{
 			echo '<tr><td align="top">'.$row["flabel"].'</td>';
 			echo '<td align="top">';
@@ -266,8 +267,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	 */
 	function EXFieldPresenceForm($tname, $itemid)
 	{
-		$qid    = mysql_query("SELECT id FROM ".$this->table_table.$tname." WHERE id=".$itemid);
-		$flag   = ($qid and @mysql_num_rows($qid) > 0) ? TRUE : FALSE;
+		$qid    = sql_query("SELECT id FROM ".$this->table_table.$tname." WHERE id=".$itemid);
+		$flag   = ($qid and @sql_num_rows($qid) > 0) ? TRUE : FALSE;
 		$msgAct = ($flag) ? '削除する' : '追加しない';
 		$msgEnt = ($flag) ? '存在しています。' : '存在していません。';
 		echo '<span style="color: orange; font-weight: bold;">このアイテムには、znItemFieldEXデータが、'.$msgEnt.'</span><br />';
@@ -383,11 +384,11 @@ class NP_znItemFieldEX extends NucleusPlugin
 				if ($row["fsetting"]) $row_set = $this->getFieldDataFromFieldId($row["fsetting"]); //リンク先フィールドデータ(Textタイプ)
 				$temp_tname = $this->getTableAboutFromID('tname', $row_set["ftid"]);
 				$sql_str    = "SELECT * FROM ".$this->table_table.$temp_tname;
-				$qid_sel    = mysql_query($sql_str);
+				$qid_sel    = sql_query($sql_str);
 				echo '<select tabindex="'.$tabindex.'" name="f__'.$row["fname"].'"><option value="">選択して下さい</option>';
 				if ($qid_sel)
 				{
-					while($row_sel = mysql_fetch_array($qid_sel))
+					while($row_sel = sql_fetch_array($qid_sel))
 					{
 						echo '<option value="'.$row_sel["id"].'" '.(($row_item["f__".$row["fname"]] == $row_sel["id"]) ? "selected" : "").'>';
 						echo $row_sel["f__".$row_set["fname"]].'</option>';
@@ -649,8 +650,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	{
 		$bid = $data['blog']->blogid;
 		$sql_str = "SELECT * FROM ".$this->table_table."item_b".$bid." WHERE id=".$data["itemid"];
-		$qid = mysql_query($sql_str);
-		if ($qid and @mysql_num_rows($qid) == 1)
+		$qid = sql_query($sql_str);
+		if ($qid and @sql_num_rows($qid) == 1)
 		{
 			if (requestVar('annul_itemdata') == 'no')
 			{
@@ -678,17 +679,17 @@ class NP_znItemFieldEX extends NucleusPlugin
 		//$itemid=0の場合、id指定をしない。つまり、AUTO_INCREMENT
 		//アイテム拡張用テーブルのidは、AUTO_INCREMENTでない。
 		$sql_str = "INSERT INTO ".$this->table_table.$tname." SET ".(($itemid > 0) ? "id=".$itemid.", " : "").$this->create_sql($tname);
-		mysql_query($sql_str);
+		sql_query($sql_str);
 	}
 	function itemdataUpd($tname, $itemid)
 	{
 		$sql_str = "UPDATE ".$this->table_table.$tname." SET ".$this->create_sql($tname)." WHERE id=".$itemid;
-		mysql_query($sql_str);
+		sql_query($sql_str);
 	}
 	function itemdataDel($tname, $itemid)
 	{
 		$sql_str = "DELETE FROM ".$this->table_table.$tname." WHERE id=".$itemid;
-		mysql_query($sql_str);
+		sql_query($sql_str);
 	}
 	/**
 	 * 共通SQL文作成
@@ -696,11 +697,11 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function create_sql($tname)
 	{
 		$ftid     = $this->getIDFromTableName($tname);
-		$qid      = mysql_query("SELECT * FROM ".$this->table_fields." WHERE ftid=".$ftid." ORDER BY forder");
+		$qid      = sql_query("SELECT * FROM ".$this->table_fields." WHERE ftid=".$ftid." ORDER BY forder");
 		$setArray = array();
 		if ($qid)
 		{
-			while($row = mysql_fetch_array($qid))
+			while($row = sql_fetch_array($qid))
 			{
 				switch ($row["ftype"])
 				{
@@ -723,7 +724,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 						$blog = &$manager->getBlog($blogid);
 						$textareabody = requestVar("f__".$row["fname"]);
 						$textareabody = ($blog->convertBreaks()) ? addBreaks($textareabody) : $textareabody;
-						$setArray[] = "f__".$row["fname"]."='".mysql_escape_string($textareabody)."'";
+						$setArray[] = "f__".$row["fname"]."='".sql_escape_string($textareabody)."'";
 						break;
 					case "Checkbox": //選択肢
 						$fsetting  = $this->preg_split_trim($row["fsetting"]);
@@ -776,13 +777,13 @@ class NP_znItemFieldEX extends NucleusPlugin
 							$fsetValArray[] = $elementValue;
 						}
 						$value      = (in_array($value, $fsetValArray)) ? $value : '';
-						$setArray[] = "f__".$row["fname"]."='".mysql_escape_string($value)."'";
+						$setArray[] = "f__".$row["fname"]."='".sql_escape_string($value)."'";
 						break;
 					case "Category": //隠しフィールドタイプ（catidが入る）
-						$setArray[] = "f__".$row["fname"]."='".mysql_escape_string(requestVar('catid'))."'";
+						$setArray[] = "f__".$row["fname"]."='".sql_escape_string(requestVar('catid'))."'";
 						break;
 					default:
-						$setArray[] = "f__".$row["fname"]."='".mysql_escape_string(requestVar("f__".$row["fname"]))."'";
+						$setArray[] = "f__".$row["fname"]."='".sql_escape_string(requestVar("f__".$row["fname"]))."'";
 				}
 			}
 		}
@@ -809,15 +810,15 @@ class NP_znItemFieldEX extends NucleusPlugin
 			$sql_str = "SELECT f.ftype, f.fsetting, f.flabel ". //v0.12.4
 				"FROM ".$this->table_fields." AS f, ".$this->table_tables." AS t ".
 				"WHERE t.tname='item_b".$blogid."' AND t.tid=f.ftid AND f.fname='".$fieldPath."'";
-			$qid_blog = mysql_query($sql_str);
-			if ($qid_blog and @mysql_num_rows($qid_blog) == 1)
+			$qid_blog = sql_query($sql_str);
+			if ($qid_blog and @sql_num_rows($qid_blog) == 1)
 			{
-				$row_blog = mysql_fetch_array($qid_blog);//フィールドデータ
+				$row_blog = sql_fetch_array($qid_blog);//フィールドデータ
 				$sql_str  = "SELECT * FROM ".$this->table_table."item_b".$blogid." WHERE id=".$itemid;
-				$qid_item = mysql_query($sql_str);
-				if ($qid_item and @mysql_num_rows($qid_item) == 1)
+				$qid_item = sql_query($sql_str);
+				if ($qid_item and @sql_num_rows($qid_item) == 1)
 				{
-					$row_item = mysql_fetch_array($qid_item);
+					$row_item = sql_fetch_array($qid_item);
 					return $this->DispEachType(
 						$itemid, 
 						$row_blog["ftype"], 
@@ -839,18 +840,18 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function relation($blogid, $path, $itemid, $format='', $templateName='', $templateParseFlag='')
 	{
 		$qid = $this->getRelationSql($blogid, $path);
-		if ($qid and @mysql_num_rows($qid) > 0)
+		if ($qid and @sql_num_rows($qid) > 0)
 		{
-			$row     = mysql_fetch_array($qid);
+			$row     = sql_fetch_array($qid);
 			$linkDat = array($row["ssql"], $row["sfname"], $row["sftype"], $row["sfsetting"]);
 		} else {
 			$linkDat = $this->createRelationSql($blogid, $path);
 			$this->setRelationSql($blogid, $path, $linkDat);
 		}
-		$qid = mysql_query($linkDat[0].$itemid);
-		if ($qid and @mysql_num_rows($qid) > 0)
+		$qid = sql_query($linkDat[0].$itemid);
+		if ($qid and @sql_num_rows($qid) > 0)
 		{
-			$row = mysql_fetch_array($qid);
+			$row = sql_fetch_array($qid);
 			return $this->DispEachType($itemid, $linkDat[2], $linkDat[3], $row[$linkDat[1]], $path, $format, $templateName, $templateParseFlag);
 		}
 	}
@@ -866,7 +867,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 		"sfname    ='".$linkDat[1]."', ".
 		"sftype    ='".$linkDat[2]."', ".
 		"sfsetting ='".$linkDat[3]."' ";
-		mysql_query($sql_str);
+		sql_query($sql_str);
 	}
 	/**
 	 * SQLキャッシュ呼出
@@ -874,7 +875,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function getRelationSql($blogid, $path)
 	{
 		$sql_str = "SELECT * FROM ".$this->table_sql_cache." WHERE sbid=".$blogid." AND spath='".$path."'";
-		$qid     = mysql_query($sql_str);
+		$qid     = sql_query($sql_str);
 		return $qid;
 	}
 	/**
@@ -1191,9 +1192,9 @@ class NP_znItemFieldEX extends NucleusPlugin
 		       . ' and i.iblog=b.bnumber'
 		       . ' LIMIT 1';
 		$res = sql_query($query);
-		if (mysql_num_rows($res) == 1)
+		if (sql_num_rows($res) == 1)
 		{
-			$item = mysql_fetch_object($res);
+			$item = sql_fetch_object($res);
 			$item->timestamp = strtotime($item->itime);	// string timestamp -> unix timestamp
 			return $item;
 		} else return 0;
@@ -1536,7 +1537,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 		$sqlquery     .= ' WHERE i.idraft = 0 AND i.itime<='.mysqldate($blog->getCorrectTime()).' AND i.iblog IN ('.implode(',', $blogs).') AND '.$where;
 		$res           = sql_query($sqlquery);
 		$array         = array();
-		while ($itemid = mysql_fetch_row($res)) array_push($array, $itemid[0]);
+		while ($itemid = sql_fetch_row($res)) array_push($array, $itemid[0]);
 		return $array;
 	}
 	/**
@@ -1600,8 +1601,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	{
 		$ftid    = $this->getIDFromTableName($tname);
 		$sql_str = "SELECT * FROM ".$this->table_fields." WHERE ftid=".$ftid." AND fname='".$fname."'";
-		$qid_set = mysql_query($sql_str);
-		return mysql_fetch_array($qid_set);
+		$qid_set = sql_query($sql_str);
+		return sql_fetch_array($qid_set);
 	}
 	/**
 	 * fidからフィールドデータを得る
@@ -1609,8 +1610,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function getFieldDataFromFieldId($id)
 	{
 		$sql_str = "SELECT * FROM ".$this->table_fields." WHERE fid=".$id;
-		$qid_set = mysql_query($sql_str);
-		return mysql_fetch_array($qid_set);
+		$qid_set = sql_query($sql_str);
+		return sql_fetch_array($qid_set);
 	}
 	/**
 	 * テーブル名からテーブルデータを得る
@@ -1618,8 +1619,8 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function getTableDataFromTableName($tname)
 	{
 		$sql_str = "SELECT * FROM ".$this->table_tables." WHERE tname='".$tname."'";
-		$qid_set = mysql_query($sql_str);
-		return mysql_fetch_array($qid_set);
+		$qid_set = sql_query($sql_str);
+		return sql_fetch_array($qid_set);
 	}
 	/**
 	 * テーブル名からテーブルidを得る
