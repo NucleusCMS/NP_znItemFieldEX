@@ -8,10 +8,10 @@
 </ol>
 </p>
 
-<h2>拡張テーブル・拡張フィールドついて</h2>
+<h2>拡張テーブル・拡張フィールドについて</h2>
 
 <div class="t01"><div class="t02"><div class="t03">
-<h6>テーブルついて</h6>
+<h3>テーブルについて</h3>
 </div></div></div>
 <ol>
 	<li>ブログごとに「アイテム拡張用テーブル」が存在します。<br />
@@ -54,7 +54,7 @@
 </ol>
 
 <div class="t01"><div class="t02"><div class="t03">
-<h6>フィールドついて</h6>
+<h3>フィールドについて</h3>
 </div></div></div>
 <ol>
 	<li>フィールドには、複数のタイプがあります。<br />
@@ -120,7 +120,7 @@
 </ol>
 
 <div class="t01"><div class="t02"><div class="t03">
-<h6>レコードについて</h6>
+<h3>レコードについて</h3>
 </div></div></div>
 <ol>
 	<li>リレーションを設定しているフィールド（Selectタイプ）には、<img src="<?php echo $plugin_dir; ?>link.gif" align="top" />が付きます。<br />
