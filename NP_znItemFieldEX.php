@@ -6,7 +6,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 	function getURL()               { return 'http://wa.otesei.com/NP_znItemFieldEX'; }
 	function getVersion()           { return '0.13'; }
 	function getDescription()       { return 'ブログごとに設定したフィールドを、アイテムに追加するプラグイン'; }
-	function supportsFeature($w)    { return in_array ($w, array ('SqlTablePrefix', 'SqlApi')); }
+	function supportsFeature($w)    { return in_array ($w, array ('HelpPage','SqlTablePrefix', 'SqlApi')); }
 	function getMinNucleusVersion() { return '350';}
 	function hasAdminArea()         { return 1; }
 	function getTableList()

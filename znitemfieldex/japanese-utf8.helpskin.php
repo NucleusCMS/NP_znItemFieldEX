@@ -1,10 +1,9 @@
-<?php $url = str_replace('<','',$_GET["url"]);?>
 <p>
 [ヘルプ一覧]<br />
 <ol>
-	<li><a href="<?php echo $url; ?>?action=help">プラグイン概要・設置方法などについて</a></li>
-	<li><a href="<?php echo $url; ?>?action=help&p=ex">拡張テーブル・拡張フィールドついて</a></li>
-	<li><a href="<?php echo $url; ?>?action=help&p=template">テンプレートへの記述について</a></li>
+	<li><a href="<?php echo $url; ?>">プラグイン概要・設置方法などについて</a></li>
+	<li><a href="<?php echo $url; ?>&p=ex">拡張テーブル・拡張フィールドついて</a></li>
+	<li><a href="<?php echo $url; ?>&p=template">テンプレートへの記述について</a></li>
 	<li><span style="background-color: #eef; font-weight: bold;">スキンへの記述について</span></li>
 </ol>
 </p>
