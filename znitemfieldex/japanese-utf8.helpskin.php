@@ -2,7 +2,7 @@
 [ヘルプ一覧]<br />
 <ol>
 	<li><a href="<?php echo $url; ?>">プラグイン概要・設置方法などについて</a></li>
-	<li><a href="<?php echo $url; ?>&p=ex">拡張テーブル・拡張フィールドついて</a></li>
+	<li><a href="<?php echo $url; ?>&p=ex">拡張テーブル・拡張フィールドについて</a></li>
 	<li><a href="<?php echo $url; ?>&p=template">テンプレートへの記述について</a></li>
 	<li><span style="background-color: #eef; font-weight: bold;">スキンへの記述について</span></li>
 </ol>
