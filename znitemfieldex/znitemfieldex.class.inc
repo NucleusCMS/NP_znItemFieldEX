@@ -308,7 +308,7 @@ h6 {
 			//table_tables
 			$sql_str = "INSERT INTO ".$this->table_tables." SET ".
 			"tname ='".requestVar('tname')                     ."', ".
-			"tdesc ='".sql_escape_string(requestVar('tdesc'))."', ".
+			"tdesc ='".sql_real_escape_string(requestVar('tdesc'))."', ".
 			"ttype = 1";
 			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX52.'</b>';
@@ -371,7 +371,7 @@ h6 {
 			//table_tables
 			$sql_str = "UPDATE ".$this->table_tables." SET ".
 			"tname ='".requestVar('tname') ."', ".
-			"tdesc ='".sql_escape_string(requestVar('tdesc'))."' ".
+			"tdesc ='".sql_real_escape_string(requestVar('tdesc'))."' ".
 			"WHERE tid=".intRequestVar('tid');
 			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX57.'</b>';
@@ -707,11 +707,11 @@ h6 {
 			//table_fields
 			$sql_str = "INSERT INTO ".$this->table_fields." SET ".
 			"ftid    = ".intRequestVar('tid')                     ." , ".
-			"fname   ='".sql_escape_string(requestVar('fname') )."', ".
+			"fname   ='".sql_real_escape_string(requestVar('fname') )."', ".
 			"forder  = ".intRequestVar('forder')                  ." , ".
-			"flabel  ='".sql_escape_string(requestVar('flabel'))."', ".
+			"flabel  ='".sql_real_escape_string(requestVar('flabel'))."', ".
 			"ftype   ='".requestVar('ftype')                      ."', ".
-			"fsetting='".sql_escape_string($fsetting)           ."'  ";
+			"fsetting='".sql_real_escape_string($fsetting)           ."'  ";
 			sql_query($sql_str);
 			$this->deleteRelationSql();
 			$msg = '<b style="color: #090;">'._ZNIFEX77.'</b>';
@@ -881,11 +881,11 @@ h6 {
 			if (requestVar('fname_o') != requestVar('fname')) sql_query($sql_str.$ftypeArray[requestVar('ftype')]);
 			//table_fields
 			$sql_str = "UPDATE ".$this->table_fields." SET ".
-			"fname   ='".sql_escape_string(requestVar('fname'))                ."', ".
+			"fname   ='".sql_real_escape_string(requestVar('fname'))                ."', ".
 			"forder  = ".intRequestVar('forder')                                 ." , ".
-			"flabel  ='".sql_escape_string(requestVar('flabel'))               ."', ".
+			"flabel  ='".sql_real_escape_string(requestVar('flabel'))               ."', ".
 			"ftype   ='".requestVar('ftype')                                     ."', ".
-			"fsetting='".sql_escape_string($fsettingArray[requestVar('ftype')])."'  ".
+			"fsetting='".sql_real_escape_string($fsettingArray[requestVar('ftype')])."'  ".
 			"WHERE fid=".intRequestVar('fid');
 			sql_query($sql_str);
 			$this->deleteRelationSql();

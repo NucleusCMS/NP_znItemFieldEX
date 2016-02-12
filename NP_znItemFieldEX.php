@@ -724,7 +724,7 @@ class NP_znItemFieldEX extends NucleusPlugin
                         $blog = &$manager->getBlog($blogid);
                         $textareabody = requestVar("f__".$row["fname"]);
                         $textareabody = ($blog->convertBreaks()) ? addBreaks($textareabody) : $textareabody;
-                        $setArray[] = "f__".$row["fname"]."='".sql_escape_string($textareabody)."'";
+                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string($textareabody)."'";
                         break;
                     case "Checkbox": //選択肢
                         $fsetting  = $this->preg_split_trim($row["fsetting"]);
@@ -777,13 +777,13 @@ class NP_znItemFieldEX extends NucleusPlugin
                             $fsetValArray[] = $elementValue;
                         }
                         $value      = (in_array($value, $fsetValArray)) ? $value : '';
-                        $setArray[] = "f__".$row["fname"]."='".sql_escape_string($value)."'";
+                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string($value)."'";
                         break;
                     case "Category": //隠しフィールドタイプ（catidが入る）
-                        $setArray[] = "f__".$row["fname"]."='".sql_escape_string(requestVar('catid'))."'";
+                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string(requestVar('catid'))."'";
                         break;
                     default:
-                        $setArray[] = "f__".$row["fname"]."='".sql_escape_string(requestVar("f__".$row["fname"]))."'";
+                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string(requestVar("f__".$row["fname"]))."'";
                 }
             }
         }
