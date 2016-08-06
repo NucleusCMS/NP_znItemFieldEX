@@ -678,7 +678,12 @@ class NP_znItemFieldEX extends NucleusPlugin
     {
         //$itemid=0の場合、id指定をしない。つまり、AUTO_INCREMENT
         //アイテム拡張用テーブルのidは、AUTO_INCREMENTでない。
-        $sql_str = "INSERT INTO ".$this->table_table.$tname." SET ".(($itemid > 0) ? "id=".$itemid.", " : "").$this->create_sql($tname);
+        $sql2 = $this->create_sql($tname);
+        if (strlen($sql2) == 0) // 設定するものがないので終了
+            return ;
+        $sql_str = "INSERT INTO ".$this->table_table.$tname
+                 . " SET ".(($itemid > 0) ? "id=".$itemid.", " : "")
+                 . $sql2;
         sql_query($sql_str);
     }
     function itemdataUpd($tname, $itemid)
@@ -793,9 +798,12 @@ class NP_znItemFieldEX extends NucleusPlugin
     /**
      * テンプレート
      */
-    function doTemplateVar(&$item, $fname, $format='', $templateName='', $templateParseFlag='')
+    function doTemplateVar(&$item)
     {
-        echo $this->getItemFieldEX($item->itemid, $fname, $format, $templateName, $templateParseFlag);
+        // doTemplateVar(&$item, $fname, $format='', $templateName='', $templateParseFlag='')
+        $args = func_get_args();
+        $args[0] = $item->itemid;
+        echo call_user_func_array(array($this, "getItemFieldEX"), $args);
     }
     /**
      * アイテムに対応する拡張フィールドを返す（別プラグインからも利用可能）ItemFieldEX API
@@ -1004,6 +1012,7 @@ class NP_znItemFieldEX extends NucleusPlugin
                         break;
                 }
                 $rdata = (!$itemid and $query) ? highlight($rdata, $expression, $this->highlight) : $rdata;
+                $temp = new stdClass;
                 $temp->body = &$rdata;
                 $params = array('item' => &$temp);
                 $manager->notify('PreItem', $params);
