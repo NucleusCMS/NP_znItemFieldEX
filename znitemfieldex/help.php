@@ -1,4 +1,10 @@
 <?php
+
+if (!isset($manager)) {
+	header('Location: ./help.html');
+	exit;
+}
+
 	$language = str_replace( array('\\','/'), '', getLanguageName());
     $plugin_path = str_replace('\\','/',dirname(__FILE__));
     $dir_name = trim(substr($plugin_path,strrpos($plugin_path,'/')),'/');
