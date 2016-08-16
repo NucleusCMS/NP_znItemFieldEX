@@ -3,8 +3,13 @@ class NP_znItemFieldEX extends NucleusPlugin
 {
     function getName()              { return 'znItemFieldEX'; }
     function getAuthor()            { return '佐藤（な）'; }
-    function getURL()               { return 'http://wa.otesei.com/NP_znItemFieldEX'; }
-    function getVersion()           { return '0.14'; }
+    function getURL()               { return 'http://japan.nucleuscms.org/wiki/plugins:znitemfieldex'; } // http://wa.otesei.com/NP_znItemFieldEX
+    function getVersion()           {
+        static $ver = FALSE;
+        if ($ver === FALSE) //              znitemfieldex/version.txt
+            $ver = file_get_contents($this->getDirectory() . 'version.txt');
+        return $ver;
+    }
     function getDescription()       { return 'ブログごとに設定したフィールドを、アイテムに追加するプラグイン'; }
     function supportsFeature($w)    { return in_array ($w, array ('HelpPage','SqlTablePrefix', 'SqlApi', 'SqlApi_sqlite')); }
     function getMinNucleusVersion() { return '350';}
@@ -1725,6 +1730,15 @@ class NP_znItemFieldEX extends NucleusPlugin
      */
     function verCheck()
     {
+        if (!preg_match("#otesei.com#i", $this->getURL())) {
+            static $v = FALSE;
+            if (!$v)
+                $v = @file_get_contents('https://raw.githubusercontent.com/NucleusCMS/NP_znItemFieldEX/master/znitemfieldex/version.txt');
+            if ($v)
+                return array('version' => $v, 'message' => 'Version Check :: Ok');
+            else
+                return array('version' => ' github', 'message' => 'Version Check :: Error');
+        }
         //$xmlrpc_valid_parents
         //nucleus/では有効なのに、各管理ページ（plugins/znitemfieldex/など）では、空？になっている。バグだよねぇ、これって。
         //管理ページから、doAction経由で別プロセスとして呼び出してもダメだった。

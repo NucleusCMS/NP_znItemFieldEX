@@ -1296,7 +1296,7 @@ h6 {
 	} else {
 		$msg = '<span style="color: #f90;">'._ZNIFEX111.'</span><br />'.
 		       '<span style="color: #f90; font-size: 18px;">ver'.$result['version'].'</span><br />'.
-		       '<a href="http://wa.otesei.com/NP_'.$this->plugname.'" target="_blank">'._ZNIFEX112.'</a>';
+		       '<a href="'.$this->plug->getURL().'" target="_blank">'._ZNIFEX112.'</a>';
 	}
 	echo $msg;
 ?>
