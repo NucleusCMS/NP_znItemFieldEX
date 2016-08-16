@@ -3,7 +3,7 @@ class znItemFieldEX_ADMIN {
 	/**
 	 * 
 	 */
-	function znItemFieldEX_ADMIN() {
+	function __construct() {
 		$this->plugAdmin       = new PluginAdmin('znItemFieldEX');
 		$this->plug            = & $this->plugAdmin->plugin;
 		$this->plugname        = $this->plug->getName();
