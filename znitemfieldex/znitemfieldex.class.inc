@@ -528,7 +528,7 @@ h6 {
 				echo '</td>';
 				echo '<td>';
 				//It is not smart!!
-				if (!$templatePathModelArray){
+				if (!isset($templatePathModelArray) || !$templatePathModelArray){
 					//,
 					$temp = substr(  $this->getTemplateParameter($row['fid'], $row['fname'], $row['ftid']) , 1); //,
 					
@@ -1007,6 +1007,7 @@ h6 {
 			$fieldName .= '<th>'.$row_field["fname"].'<br />('.$row_field["flabel"].')'.$img.'</th>';
 			$asName++;
 		}
+        $where = '';
 		$sql_str  = " SELECT ".implode(", ", $fieldsArray);
 		$sql_str .= " FROM " .$this->table_table.requestVar('tname')." AS t0 ".implode(" ", $joinsArray);
 		//
