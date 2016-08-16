@@ -679,18 +679,42 @@ class NP_znItemFieldEX extends NucleusPlugin
     {
         //$itemid=0の場合、id指定をしない。つまり、AUTO_INCREMENT
         //アイテム拡張用テーブルのidは、AUTO_INCREMENTでない。
-        $sql2 = $this->create_sql($tname);
-        if (strlen($sql2) == 0) // 設定するものがないので終了
+        $cols2 = $this->create_sql($tname);
+        if (empty($cols2)) // 設定するものがないので終了
             return ;
-        $sql_str = "INSERT INTO ".$this->table_table.$tname
-                 . " SET ".(($itemid > 0) ? "id=".$itemid.", " : "")
-                 . $sql2;
+        $cols = array();
+        $keys   = "";
+        $values = "";
+        if ($itemid > 0)
+            $cols['id'] = intval($itemid);
+        foreach(array_merge($cols, $cols2) as $k => $v)
+        {
+            if (strlen($keys))   $keys   .= ', ';
+            if (strlen($values)) $values .= ', ';
+            $keys   .= $k;
+            $values .= (is_string($v) ? sql_quote_string($v) : intval($v));
+        }
+        $sql_str = "INSERT INTO ".$this->table_table.$tname . " (${keys}) VALUES(${values})";
         sql_query($sql_str);
     }
     function itemdataUpd($tname, $itemid)
     {
-        $sql_str = "UPDATE ".$this->table_table.$tname." SET ".$this->create_sql($tname)." WHERE id=".$itemid;
-        sql_query($sql_str);
+        $cols = $this->create_sql($tname);
+        if (!empty($cols))
+        {
+            $set = "";
+            foreach($cols as $k => $v)
+            {
+                if (strlen($set)>0)
+                    $set .= ', ';
+                if (is_string($v))
+                    $set .= sprintf("%s = %s", $k, sql_quote_string($v));
+                else
+                    $set .= sprintf("%s = %d", $k, intval($v));
+            }
+            $sql_str = "UPDATE ".$this->table_table.$tname." SET ${set} WHERE id=".intval($itemid);
+            sql_query($sql_str);
+        }
     }
     function itemdataDel($tname, $itemid)
     {
@@ -699,6 +723,7 @@ class NP_znItemFieldEX extends NucleusPlugin
     }
     /**
      * 共通SQL文作成
+     * 返り値：生の配列 [キー名]=値
      */
     function create_sql($tname)
     {
@@ -730,7 +755,7 @@ class NP_znItemFieldEX extends NucleusPlugin
                         $blog = &$manager->getBlog($blogid);
                         $textareabody = requestVar("f__".$row["fname"]);
                         $textareabody = ($blog->convertBreaks()) ? addBreaks($textareabody) : $textareabody;
-                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string($textareabody)."'";
+                        $setArray["f__".$row["fname"]] = strval($textareabody);
                         break;
                     case "Checkbox": //選択肢
                         $fsetting  = $this->preg_split_trim($row["fsetting"]);
@@ -740,7 +765,7 @@ class NP_znItemFieldEX extends NucleusPlugin
                         {
                             if (requestVar("f__".$row["fname"].$i++) == urlencode($value)) $tempArray[] = $value;
                         }
-                        $setArray[] = "f__".$row["fname"]."='".implode("\n", $tempArray)."'";
+                        $setArray["f__".$row["fname"]] = strval(implode("\n", $tempArray));
                         break;
                     case "Image": //画像
                         //$fsetting    = explode("/", $row["fsetting"]);
@@ -769,7 +794,7 @@ class NP_znItemFieldEX extends NucleusPlugin
                             $temp = requestVar("col_f__".$row["fname"])."/".requestVar("img_f__".$row["fname"]);
                             $temp = (requestVar("img_f__".$row["fname"])) ? $temp : ""; //ファイル名が空の場合、コレクション名も空白にする
                         }
-                        $setArray[] = "f__".$row["fname"]."='".$temp."'";
+                        $setArray["f__".$row["fname"]] = strval($temp);
                         
                         break;
                     case "Radio": //選択肢
@@ -783,18 +808,17 @@ class NP_znItemFieldEX extends NucleusPlugin
                             $fsetValArray[] = $elementValue;
                         }
                         $value      = (in_array($value, $fsetValArray)) ? $value : '';
-                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string($value)."'";
+                        $setArray["f__".$row["fname"]] = strval($value);
                         break;
                     case "Category": //隠しフィールドタイプ（catidが入る）
-                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string(requestVar('catid'))."'";
+                        $setArray["f__".$row["fname"]] = intval(requestVar('catid'));
                         break;
                     default:
-                        $setArray[] = "f__".$row["fname"]."='".sql_real_escape_string(requestVar("f__".$row["fname"]))."'";
+                        $setArray["f__".$row["fname"]] = strval(requestVar("f__".$row["fname"]));
                 }
             }
         }
-        $sql_str .= implode(", ", $setArray);
-        return $sql_str;
+        return $setArray;
     }
     /**
      * テンプレート
