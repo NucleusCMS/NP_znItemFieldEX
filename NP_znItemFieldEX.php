@@ -180,9 +180,9 @@ class NP_znItemFieldEX extends NucleusPlugin
             PRIMARY KEY (id)
             )");
         //再インストール時に、前のデータが残っている場合は、初期レコードを追加しない。
-        $sql_str = "SELECT tname FROM ".$this->table_tables." WHERE tname='item_b".$blogid."'";
-        $qid = sql_query($sql_str);
-        if (!($qid and @sql_num_rows($qid) > 0))
+        $sql_str = "SELECT count(*) AS result FROM ".$this->table_tables." WHERE tname='item_b".$blogid."'";
+        $qid = intval(quickQuery($sql_str));
+        if (!($qid > 0))
         {
             $sql_str = "INSERT INTO ".$this->table_tables." SET ".
             "tname ='item_b".$blogid."', ".
@@ -220,7 +220,7 @@ class NP_znItemFieldEX extends NucleusPlugin
         //拡張テーブルのデータ取得（何らかのトラブルで存在しない場合の処理も必要★★★
         $sql_str = "SELECT * FROM ".$this->table_table.$tname." WHERE id=".$itemid;
         $qid = sql_query($sql_str);
-        if ($qid and @sql_num_rows($qid) > 0) $row_item = sql_fetch_array($qid);
+        $row_item = ($qid ? sql_fetch_array($qid) : array());
         
         $ftid = $this->getIDFromTableName($tname);
         $sql_str = "SELECT * FROM ".$this->table_fields." WHERE ftid='".$ftid."' ORDER BY forder";
@@ -267,8 +267,7 @@ class NP_znItemFieldEX extends NucleusPlugin
      */
     function EXFieldPresenceForm($tname, $itemid)
     {
-        $qid    = sql_query("SELECT id FROM ".$this->table_table.$tname." WHERE id=".$itemid);
-        $flag   = ($qid and @sql_num_rows($qid) > 0) ? TRUE : FALSE;
+        $flag   = (intval(quickQuery("SELECT count(*) AS result FROM ".$this->table_table.$tname." WHERE id=".$itemid)) > 0) ? TRUE : FALSE;
         $msgAct = ($flag) ? '削除する' : '追加しない';
         $msgEnt = ($flag) ? '存在しています。' : '存在していません。';
         echo '<span style="color: orange; font-weight: bold;">このアイテムには、znItemFieldEXデータが、'.$msgEnt.'</span><br />';
@@ -649,9 +648,9 @@ class NP_znItemFieldEX extends NucleusPlugin
     function event_PreUpdateItem($data)
     {
         $bid = $data['blog']->blogid;
-        $sql_str = "SELECT * FROM ".$this->table_table."item_b".$bid." WHERE id=".$data["itemid"];
-        $qid = sql_query($sql_str);
-        if ($qid and @sql_num_rows($qid) == 1)
+        $sql_str = "SELECT count(*) AS result FROM ".$this->table_table."item_b".$bid." WHERE id=".$data["itemid"];
+        $count = intval(quickQuery($sql_str));
+        if ($count > 0)
         {
             if (requestVar('annul_itemdata') == 'no')
             {
@@ -819,14 +818,13 @@ class NP_znItemFieldEX extends NucleusPlugin
                 "FROM ".$this->table_fields." AS f, ".$this->table_tables." AS t ".
                 "WHERE t.tname='item_b".$blogid."' AND t.tid=f.ftid AND f.fname='".$fieldPath."'";
             $qid_blog = sql_query($sql_str);
-            if ($qid_blog and @sql_num_rows($qid_blog) == 1)
+            if ($qid_blog && ($row_blog = sql_fetch_assoc($qid_blog)) && !empty($row_blog))
             {
-                $row_blog = sql_fetch_array($qid_blog);//フィールドデータ
+                //フィールドデータ
                 $sql_str  = "SELECT * FROM ".$this->table_table."item_b".$blogid." WHERE id=".$itemid;
                 $qid_item = sql_query($sql_str);
-                if ($qid_item and @sql_num_rows($qid_item) == 1)
+                if ($qid_item && ($row_item = sql_fetch_assoc($qid_item)) && !empty($row_item))
                 {
-                    $row_item = sql_fetch_array($qid_item);
                     return $this->DispEachType(
                         $itemid, 
                         $row_blog["ftype"], 
@@ -848,18 +846,16 @@ class NP_znItemFieldEX extends NucleusPlugin
     function relation($blogid, $path, $itemid, $format='', $templateName='', $templateParseFlag='')
     {
         $qid = $this->getRelationSql($blogid, $path);
-        if ($qid and @sql_num_rows($qid) > 0)
+        if ($qid && ($row = sql_fetch_array($qid)) && !empty($row))
         {
-            $row     = sql_fetch_array($qid);
             $linkDat = array($row["ssql"], $row["sfname"], $row["sftype"], $row["sfsetting"]);
         } else {
             $linkDat = $this->createRelationSql($blogid, $path);
             $this->setRelationSql($blogid, $path, $linkDat);
         }
         $qid = sql_query($linkDat[0].$itemid);
-        if ($qid and @sql_num_rows($qid) > 0)
+        if ($qid && ($row = sql_fetch_array($qid)) && !empty($row))
         {
-            $row = sql_fetch_array($qid);
             return $this->DispEachType($itemid, $linkDat[2], $linkDat[3], $row[$linkDat[1]], $path, $format, $templateName, $templateParseFlag);
         }
     }
@@ -1201,9 +1197,8 @@ class NP_znItemFieldEX extends NucleusPlugin
                . ' and i.iblog=b.bnumber'
                . ' LIMIT 1';
         $res = sql_query($query);
-        if (sql_num_rows($res) == 1)
+        if ($res && ($item = sql_fetch_object($res)) && is_object($item))
         {
-            $item = sql_fetch_object($res);
             $item->timestamp = strtotime($item->itime);    // string timestamp -> unix timestamp
             return $item;
         } else return 0;
