@@ -6,7 +6,7 @@ class NP_znItemFieldEX extends NucleusPlugin
     function getURL()               { return 'http://wa.otesei.com/NP_znItemFieldEX'; }
     function getVersion()           { return '0.14'; }
     function getDescription()       { return 'ブログごとに設定したフィールドを、アイテムに追加するプラグイン'; }
-    function supportsFeature($w)    { return in_array ($w, array ('HelpPage','SqlTablePrefix', 'SqlApi')); }
+    function supportsFeature($w)    { return in_array ($w, array ('HelpPage','SqlTablePrefix', 'SqlApi', 'SqlApi_sqlite')); }
     function getMinNucleusVersion() { return '350';}
     function hasAdminArea()         { return 1; }
     function getTableList()
@@ -37,6 +37,8 @@ class NP_znItemFieldEX extends NucleusPlugin
     }
     function init()
     {
+        $this->is_db_sqlite = (isset($this->is_db_sqlite) && $this->is_db_sqlite);
+
         // include language file for this plugin
         $language = str_replace( array('\\','/'), '', getLanguageName());
         $incFile  = (is_file($this->getDirectory().$language.'.php')) ? $language : 'english';
@@ -61,39 +63,77 @@ class NP_znItemFieldEX extends NucleusPlugin
         $this->createOption('verCheck'       , '最新バージョンの確認をしますか？', 'yesno', 'no'); //version check //vc
         //ブログoption
         $this->createBlogOption('searchField', '検索対象となるフィールド', "textarea", "");
-        sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_tables.
-            " ( 
-            `tid`      INT(11)      NOT NULL AUTO_INCREMENT, 
-            `tname`    VARCHAR(255) NOT NULL, 
-            `tdesc`    VARCHAR(255) NOT NULL, 
-            `ttype`    TINYINT(4)   NOT NULL DEFAULT '0', 
-            PRIMARY KEY (tid), 
-            KEY tname (tname)
-            )");
-        sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_fields.
-            " ( 
-            `fid`      INT(11)      NOT NULL AUTO_INCREMENT, 
-            `ftid`     INT(11)      NOT NULL DEFAULT '0', 
-            `fname`    VARCHAR(255) NOT NULL, 
-            `forder`   INT(11)      NOT NULL DEFAULT '50', 
-            `flabel`   VARCHAR(255) NOT NULL, 
-            `ftype`    VARCHAR(255) NOT NULL, 
-            `fsetting` VARCHAR(255) NOT NULL, 
-            PRIMARY KEY (fid), 
-            KEY fname (fname)
-            )");
-        sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_sql_cache.
-            " ( 
-            `sid`       INT(11)      NOT NULL AUTO_INCREMENT, 
-            `sbid`      INT(11)      NOT NULL DEFAULT '0', 
-            `spath`     VARCHAR(255) NOT NULL, 
-            `ssql`      TEXT         NOT NULL, 
-            `sfname`    VARCHAR(255) NOT NULL, 
-            `sftype`    VARCHAR(255) NOT NULL, 
-            `sfsetting` VARCHAR(255) NOT NULL, 
-            PRIMARY KEY (sid), 
-            KEY spath (spath)
-            )");
+        if ($this->is_db_sqlite)
+        {
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_tables.
+                " (
+                `tid`      INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL,
+                `tname`    VARCHAR(255) NOT NULL,
+                `tdesc`    VARCHAR(255) NOT NULL,
+                `ttype`    TINYINT(4)   NOT NULL DEFAULT '0'
+                )");
+            sql_query(sprintf('CREATE INDEX IF NOT EXISTS `%s_idx_tname` on `%s` (`tname`);', $this->table_tables, $this->table_tables));
+
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_fields.
+                " (
+                `fid`      INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL,
+                `ftid`     INT(11)      NOT NULL DEFAULT '0',
+                `fname`    VARCHAR(255) NOT NULL,
+                `forder`   INT(11)      NOT NULL DEFAULT '50',
+                `flabel`   VARCHAR(255) NOT NULL,
+                `ftype`    VARCHAR(255) NOT NULL,
+                `fsetting` VARCHAR(255) NOT NULL
+                )");
+            sql_query(sprintf('CREATE INDEX IF NOT EXISTS `%s_idx_fname` on `%s` (`fname`);', $this->table_fields, $this->table_fields));
+
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_sql_cache.
+                " (
+                `sid`       INTEGER PRIMARY KEY AUTOINCREMENT  NOT NULL,
+                `sbid`      INT(11)      NOT NULL DEFAULT '0',
+                `spath`     VARCHAR(255) NOT NULL,
+                `ssql`      TEXT         NOT NULL,
+                `sfname`    VARCHAR(255) NOT NULL,
+                `sftype`    VARCHAR(255) NOT NULL,
+                `sfsetting` VARCHAR(255) NOT NULL
+                )");
+            sql_query(sprintf('CREATE INDEX IF NOT EXISTS `%s_idx_spath` on `%s` (`spath`);', $this->table_sql_cache, $this->table_sql_cache));
+        }
+        else
+        {
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_tables.
+                " (
+                `tid`      INT(11)      NOT NULL AUTO_INCREMENT,
+                `tname`    VARCHAR(255) NOT NULL,
+                `tdesc`    VARCHAR(255) NOT NULL,
+                `ttype`    TINYINT(4)   NOT NULL DEFAULT '0',
+                PRIMARY KEY (tid),
+                KEY tname (tname)
+                )");
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_fields.
+                " (
+                `fid`      INT(11)      NOT NULL AUTO_INCREMENT,
+                `ftid`     INT(11)      NOT NULL DEFAULT '0',
+                `fname`    VARCHAR(255) NOT NULL,
+                `forder`   INT(11)      NOT NULL DEFAULT '50',
+                `flabel`   VARCHAR(255) NOT NULL,
+                `ftype`    VARCHAR(255) NOT NULL,
+                `fsetting` VARCHAR(255) NOT NULL,
+                PRIMARY KEY (fid),
+                KEY fname (fname)
+                )");
+            sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_sql_cache.
+                " (
+                `sid`       INT(11)      NOT NULL AUTO_INCREMENT,
+                `sbid`      INT(11)      NOT NULL DEFAULT '0',
+                `spath`     VARCHAR(255) NOT NULL,
+                `ssql`      TEXT         NOT NULL,
+                `sfname`    VARCHAR(255) NOT NULL,
+                `sftype`    VARCHAR(255) NOT NULL,
+                `sfsetting` VARCHAR(255) NOT NULL,
+                PRIMARY KEY (sid),
+                KEY spath (spath)
+                )");
+        }
         //すでにあるブログの数だけテーブルを作成
         $qid = sql_query("SELECT bnumber FROM ".sql_table('blog'));
         while ($row = sql_fetch_object($qid)) $this->createItemTable($row->bnumber);

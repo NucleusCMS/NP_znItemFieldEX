@@ -300,11 +300,23 @@ h6 {
 	function action_tnew() {
 		//NG
 		if ( $this->table_valid_check(requestVar('tname')) ){
+			global $MYSQL_HANDLER;
+			if ('sqlite' == $MYSQL_HANDLER[1])
+			{
+				$sql = "CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." (
+					`id`  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+					PRIMARY KEY (id)
+					)";
+			}
+			else
+			{
+				$sql = "CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." (
+					`id`  INT(11) NOT NULL AUTO_INCREMENT,
+					PRIMARY KEY (id)
+					)";
+			}
 			//table_tableidAUTO_INCREMENT
-			sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." ( 
-				`id`  INT(11) NOT NULL AUTO_INCREMENT, 
-				PRIMARY KEY (id)
-				)");
+			sql_query($sql);
 			//table_tables
 			$sql_str = "INSERT INTO ".$this->table_tables
                       . "(tname, tdesc, ttype)"
