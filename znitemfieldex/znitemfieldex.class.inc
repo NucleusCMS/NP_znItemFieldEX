@@ -306,10 +306,12 @@ h6 {
 				PRIMARY KEY (id)
 				)");
 			//table_tables
-			$sql_str = "INSERT INTO ".$this->table_tables." SET ".
-			"tname ='".requestVar('tname')                     ."', ".
-			"tdesc ='".sql_real_escape_string(requestVar('tdesc'))."', ".
-			"ttype = 1";
+			$sql_str = "INSERT INTO ".$this->table_tables
+                      . "(tname, tdesc, ttype)"
+                      . sprintf("VALUES(%s, %s, 1)",
+                              sql_quote_string(requestVar('tname') ),
+                              sql_quote_string(requestVar('tdesc') )
+                              );
 			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX52.'</b>';
 			$this->formRefreshFlag = true;
@@ -703,15 +705,20 @@ h6 {
 				default:
 					$sql_str = "";
 			}
+			if ($this->plug->is_db_sqlite && preg_match("#text|char#i", $sql_str) && !preg_match("#DEFAULT#i", $sql_str))
+					$sql_str .= " DEFAULT ''";
 			sql_query($sql_str);
 			//table_fields
-			$sql_str = "INSERT INTO ".$this->table_fields." SET ".
-			"ftid    = ".intRequestVar('tid')                     ." , ".
-			"fname   ='".sql_real_escape_string(requestVar('fname') )."', ".
-			"forder  = ".intRequestVar('forder')                  ." , ".
-			"flabel  ='".sql_real_escape_string(requestVar('flabel'))."', ".
-			"ftype   ='".requestVar('ftype')                      ."', ".
-			"fsetting='".sql_real_escape_string($fsetting)           ."'  ";
+			$sql_str = "INSERT INTO ".$this->table_fields
+					. "(ftid, fname, forder, flabel, ftype, fsetting)"
+					. sprintf("VALUES(%d, %s, %d, %s, %s, %s)",
+							intRequestVar('tid'),
+							sql_quote_string(requestVar('fname') ),
+							intRequestVar('forder'),
+							sql_quote_string(requestVar('flabel') ),
+							sql_quote_string(requestVar('ftype') ),
+							sql_quote_string(requestVar('$fsetting') )
+					);
 			sql_query($sql_str);
 			$this->deleteRelationSql();
 			$msg = '<b style="color: #090;">'._ZNIFEX77.'</b>';

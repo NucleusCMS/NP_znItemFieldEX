@@ -184,10 +184,12 @@ class NP_znItemFieldEX extends NucleusPlugin
         $qid = intval(quickQuery($sql_str));
         if (!($qid > 0))
         {
-            $sql_str = "INSERT INTO ".$this->table_tables." SET ".
-            "tname ='item_b".$blogid."', ".
-            "tdesc ='".getBlogNameFromID($blogid)."', ".
-            "ttype = 0";
+            $sql_str = "INSERT INTO ".$this->table_tables
+                    . " (tname, tdesc, ttype)"
+                    . sprintf("VALUES(%s, %s, 0)",
+                               sql_quote_string("item_b".$blogid),
+                               sql_quote_string(getBlogNameFromID($blogid))
+                            );
             sql_query($sql_str);
         }
     }
@@ -864,14 +866,28 @@ class NP_znItemFieldEX extends NucleusPlugin
      */
     function setRelationSql($blogid, $path, $linkDat)
     {
-        $sql_str = "INSERT INTO ".$this->table_sql_cache." SET ".
-        "sbid      = ".$blogid.", ".
-        "spath     ='".$path."', ".
-        "ssql      ='".$linkDat[0]."', ".
-        "sfname    ='".$linkDat[1]."', ".
-        "sftype    ='".$linkDat[2]."', ".
-        "sfsetting ='".$linkDat[3]."' ";
-        sql_query($sql_str);
+        global $MYSQL_HANDLER;
+        if (('pdo' == $MYSQL_HANDLER[0]) && function_exists('sql_prepare_execute'))
+        {
+            $sql_str = "INSERT INTO ".$this->table_sql_cache
+                    . " (sbid, spath, ssql, sfname, sftype, sfsetting)"
+                    . sprintf(" VALUES(%d, ?, ?, ?, ?, ?)", $blogid);
+            sql_prepare_execute($sql_str, array($path, $linkDat[0], $linkDat[1],  $linkDat[2],  $linkDat[3]));
+        }
+        else
+        {
+            $sql_str = "INSERT INTO ".$this->table_sql_cache
+                    . " (sbid, spath, ssql, sfname, sftype, sfsetting)"
+                    . sprintf(" VALUES(%d, %s, %s, %s, %s, %s)",
+                            $blogid,
+                            sql_quote_string($path),
+                            sql_quote_string($linkDat[0]),
+                            sql_quote_string($linkDat[1]),
+                            sql_quote_string($linkDat[2]),
+                            sql_quote_string($linkDat[3])
+                            );
+            sql_query($sql_str);
+        }
     }
     /**
      * SQLキャッシュ呼出
