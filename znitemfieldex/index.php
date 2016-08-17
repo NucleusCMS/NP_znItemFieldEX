@@ -1,7 +1,9 @@
 <?php
 
 $DIR_LIBS = '';
-$strRel = '../../../'; 
+$strRel = '../../../';
+if (!is_file($strRel.'config.php') && is_file($strRel.'../config.php'))
+    $strRel .= '../';
 require($strRel . 'config.php');
 if (!$member->isLoggedIn()) doError("You\'re not logged in.");
 include_libs('PLUGINADMIN.php');

@@ -3,7 +3,7 @@ class znItemFieldEX_ADMIN {
 	/**
 	 * 
 	 */
-	function znItemFieldEX_ADMIN() {
+	function __construct() {
 		$this->plugAdmin       = new PluginAdmin('znItemFieldEX');
 		$this->plug            = & $this->plugAdmin->plugin;
 		$this->plugname        = $this->plug->getName();
@@ -300,16 +300,30 @@ h6 {
 	function action_tnew() {
 		//NG
 		if ( $this->table_valid_check(requestVar('tname')) ){
+			global $MYSQL_HANDLER;
+			if ('sqlite' == $MYSQL_HANDLER[1])
+			{
+				$sql = "CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." (
+					`id`  INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ,
+					PRIMARY KEY (id)
+					)";
+			}
+			else
+			{
+				$sql = "CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." (
+					`id`  INT(11) NOT NULL AUTO_INCREMENT,
+					PRIMARY KEY (id)
+					)";
+			}
 			//table_tableidAUTO_INCREMENT
-			sql_query("CREATE TABLE IF NOT EXISTS ".$this->table_table.requestVar('tname')." ( 
-				`id`  INT(11) NOT NULL AUTO_INCREMENT, 
-				PRIMARY KEY (id)
-				)");
+			sql_query($sql);
 			//table_tables
-			$sql_str = "INSERT INTO ".$this->table_tables." SET ".
-			"tname ='".requestVar('tname')                     ."', ".
-			"tdesc ='".sql_real_escape_string(requestVar('tdesc'))."', ".
-			"ttype = 1";
+			$sql_str = "INSERT INTO ".$this->table_tables
+                      . "(tname, tdesc, ttype)"
+                      . sprintf("VALUES(%s, %s, 1)",
+                              sql_quote_string(requestVar('tname') ),
+                              sql_quote_string(requestVar('tdesc') )
+                              );
 			sql_query($sql_str);
 			$msg = '<b style="color: #090;">'._ZNIFEX52.'</b>';
 			$this->formRefreshFlag = true;
@@ -528,7 +542,7 @@ h6 {
 				echo '</td>';
 				echo '<td>';
 				//It is not smart!!
-				if (!$templatePathModelArray){
+				if (!isset($templatePathModelArray) || !$templatePathModelArray){
 					//,
 					$temp = substr(  $this->getTemplateParameter($row['fid'], $row['fname'], $row['ftid']) , 1); //,
 					
@@ -703,15 +717,20 @@ h6 {
 				default:
 					$sql_str = "";
 			}
+			if ($this->plug->is_db_sqlite && preg_match("#text|char#i", $sql_str) && !preg_match("#DEFAULT#i", $sql_str))
+					$sql_str .= " DEFAULT ''";
 			sql_query($sql_str);
 			//table_fields
-			$sql_str = "INSERT INTO ".$this->table_fields." SET ".
-			"ftid    = ".intRequestVar('tid')                     ." , ".
-			"fname   ='".sql_real_escape_string(requestVar('fname') )."', ".
-			"forder  = ".intRequestVar('forder')                  ." , ".
-			"flabel  ='".sql_real_escape_string(requestVar('flabel'))."', ".
-			"ftype   ='".requestVar('ftype')                      ."', ".
-			"fsetting='".sql_real_escape_string($fsetting)           ."'  ";
+			$sql_str = "INSERT INTO ".$this->table_fields
+					. "(ftid, fname, forder, flabel, ftype, fsetting)"
+					. sprintf("VALUES(%d, %s, %d, %s, %s, %s)",
+							intRequestVar('tid'),
+							sql_quote_string(requestVar('fname') ),
+							intRequestVar('forder'),
+							sql_quote_string(requestVar('flabel') ),
+							sql_quote_string(requestVar('ftype') ),
+							sql_quote_string(requestVar('$fsetting') )
+					);
 			sql_query($sql_str);
 			$this->deleteRelationSql();
 			$msg = '<b style="color: #090;">'._ZNIFEX77.'</b>';
@@ -1007,6 +1026,7 @@ h6 {
 			$fieldName .= '<th>'.$row_field["fname"].'<br />('.$row_field["flabel"].')'.$img.'</th>';
 			$asName++;
 		}
+        $where = '';
 		$sql_str  = " SELECT ".implode(", ", $fieldsArray);
 		$sql_str .= " FROM " .$this->table_table.requestVar('tname')." AS t0 ".implode(" ", $joinsArray);
 		//
@@ -1276,7 +1296,7 @@ h6 {
 	} else {
 		$msg = '<span style="color: #f90;">'._ZNIFEX111.'</span><br />'.
 		       '<span style="color: #f90; font-size: 18px;">ver'.$result['version'].'</span><br />'.
-		       '<a href="http://wa.otesei.com/NP_'.$this->plugname.'" target="_blank">'._ZNIFEX112.'</a>';
+		       '<a href="'.$this->plug->getURL().'" target="_blank">'._ZNIFEX112.'</a>';
 	}
 	echo $msg;
 ?>
