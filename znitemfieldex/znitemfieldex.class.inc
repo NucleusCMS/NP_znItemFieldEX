@@ -113,20 +113,24 @@ h6 {
 .t01 {
 	margin: 15px 0px;
 	padding: 0px;
-	background: url(' . $this->url . 't01' . $modeColor . '.gif) repeat-x;
+	background: url(' . $this->url . 'images/t01' . $modeColor . '.gif) repeat-x;
 	font-size: 0px;
 }
 .t02 {
 	margin: 0px;
 	padding: 0px;
-	background: url(' . $this->url . 't02' . $modeColor . '.gif) left no-repeat;
+	background: url(' . $this->url . 'images/t02' . $modeColor . '.gif) left no-repeat;
 	font-size: 0px;
 }
 .t03 {
 	margin: 0px;
 	padding: 6px 10px 4px 30px;
-	background: url(' . $this->url . 't03' . $modeColor . '.gif) right no-repeat;
+	background: url(' . $this->url . 'images/t03' . $modeColor . '.gif) right no-repeat;
 	height: 18px;
+}
+.h03 {
+ display: initial !important;
+ padding-left: 0px !important;
 }
 -->
 </style>'
@@ -135,12 +139,12 @@ h6 {
 		$act           = $this->url.'index.php?action=';
 		if ( requestVar('tname') and requestVar('tablenavi')!="no" ){
 			$row        =  $this->plug->getTableDataFromTableName(requestVar('tname'));
-			$temp_table = '<img src="'.$this->url.'arrow.gif" align="top" /><img src="'.$this->url.'sele.gif"  align="top" />'.
+			$temp_table = '<img src="'.$this->url.'images/arrow.gif" align="top" /><img src="'.$this->url.'images/sele.gif"  align="top" />'.
 				'<a style="color: #00f;" href="'.$act.'f_overview&amp;tname='.requestVar('tname').'&amp;tid='.$row["tid"].'">'.requestVar('tname').' ('.$row["tdesc"].') </a>';
 		} else $temp_table = "";
 		$menut         = array_fill(0, 9, 'menu_title');
 		$menut[$focus] = 'menu_title_act';
-		$tNavi         = '<p style="margin-bottom: 10px;"><img src="'.$this->url.'tables.gif" align="top" />';
+		$tNavi         = '<p style="margin-bottom: 10px;"><img src="'.$this->url.'images/tables.gif" align="top" />';
 		$tNavi        .= '<a style="color: #00f;" href="'.$this->url.'?action=t_overview">'._ZNIFEX31.'</a>'.$temp_table.'</p>';
 		$temp_h        = '<div class="znifemenu"><table class="menu_bg" cellspacing="0"><tr>';
 		$temp_f        = '</tr></table></div>';
@@ -150,8 +154,8 @@ h6 {
 			case 'verinfo':   //
 				echo $tNavi;
 				echo $temp_h;
-				$this->menu($this->url.'stru.gif', ''._ZNIFEX32.''                , $menut[0], '#00f', $act.'t_overview');
-				$this->menu($this->url.'info.gif', ''._ZNIFEX33.''      , $menut[3], '#00f', $act.'verinfo');
+				$this->menu($this->url.'images/stru.gif', ''._ZNIFEX32.''                , $menut[0], '#00f', $act.'t_overview');
+				$this->menu($this->url.'images/info.gif', ''._ZNIFEX33.''      , $menut[3], '#00f', $act.'verinfo');
 				echo $temp_f;
 				break;
 			case 'f_overview'://
@@ -162,13 +166,13 @@ h6 {
 				echo $tNavi;
 				echo $temp_h;
 				$para     = '&amp;tname='.requestVar('tname').'&amp;tid='.requestVar('tid');
-				$this->menu($this->url.'stru.gif', ''._ZNIFEX32.''                , $menut[0], '#00f', $act.'f_overview' .$para);
-				$this->menu($this->url.'sele.gif', ''._ZNIFEX34.''                , $menut[1], '#00f', $act.'r_overview' .$para);
-				$this->menu($this->url.'sear.gif', ''._ZNIFEX35.''                , $menut[2], '#00f', $act.'rsearch'    .$para);
-				$this->menu($this->url.'inse.gif', ''._ZNIFEX36.''                , $menut[3], '#00f', $act.'r_overview' .$para);
-				$this->menu($this->url.'empt.gif', ''._ZNIFEX37.''            , $menut[5], '#f00', $act.'rdelete_all'.$para);
-				$this->menu($this->url.'drop.gif', ''._ZNIFEX38.''                , $menut[6], '#f00', $act.'tdelete'    .$para);
-				$this->menu($this->url.'info.gif', ''._ZNIFEX33.''      , $menut[8], '#00f', $act.'verinfo');
+				$this->menu($this->url.'images/stru.gif', ''._ZNIFEX32.''                , $menut[0], '#00f', $act.'f_overview' .$para);
+				$this->menu($this->url.'images/sele.gif', ''._ZNIFEX34.''                , $menut[1], '#00f', $act.'r_overview' .$para);
+				$this->menu($this->url.'images/sear.gif', ''._ZNIFEX35.''                , $menut[2], '#00f', $act.'rsearch'    .$para);
+				$this->menu($this->url.'images/inse.gif', ''._ZNIFEX36.''                , $menut[3], '#00f', $act.'r_overview' .$para);
+				$this->menu($this->url.'images/empt.gif', ''._ZNIFEX37.''            , $menut[5], '#f00', $act.'rdelete_all'.$para);
+				$this->menu($this->url.'images/drop.gif', ''._ZNIFEX38.''                , $menut[6], '#f00', $act.'tdelete'    .$para);
+				$this->menu($this->url.'images/info.gif', ''._ZNIFEX33.''      , $menut[8], '#00f', $act.'verinfo');
 				echo $temp_f;
 				break;
 		}
@@ -208,7 +212,7 @@ h6 {
 		$this->start('t_overview', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX31; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX31; ?></h3>
 		</div></div></div>
 		<table>
 			<thead><tr><th><?php echo _ZNIFEX39; ?></th><th><?php echo _ZNIFEX40; ?></th><th><?php echo _ZNIFEX41; ?></th><th colspan="7"><?php echo _ZNIFEX42; ?></th><th><?php echo _ZNIFEX43; ?></th><th><?php echo _ZNIFEX44; ?></th></tr></thead>
@@ -240,7 +244,7 @@ h6 {
 			</tbody>
 		</table>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX48; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX48; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -290,7 +294,7 @@ h6 {
 	function table_act($tit, $img, $valid_f, $act){
 		echo '<td width="16" style="text-align: center; width: 16px;">';
 		if ($valid_f){
-			echo '<a href="'.$this->url.'index.php?action='.$act.'"><img src="'.$this->url.$img.'.gif'.'" alt="'.$tit.'" title="'.$tit.'" /></a>';
+			echo '<a href="'.$this->url.'index.php?action='.$act.'"><img src="'.$this->url.'images/'.$img.'.gif'.'" alt="'.$tit.'" title="'.$tit.'" /></a>';
 		} else { echo '--'; }
 		echo '</td>';
 	}
@@ -340,7 +344,7 @@ h6 {
 			$this->start('tedit', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX54; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX54; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -400,6 +404,7 @@ h6 {
 	function action_tdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM ?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -447,7 +452,7 @@ h6 {
 		$this->start('f_overview', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX60; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX60; ?></h3>
 		</div></div></div>
 		<table>
 			<thead>
@@ -491,7 +496,7 @@ h6 {
 					$sql_str = "SELECT * FROM ".$this->table_fields." WHERE fsetting='".$row['fid']."' AND ftype='Select'";
 					$qid_sel = sql_query($sql_str);
 					if ($qid_sel){
-						if (sql_num_rows($qid_sel)) echo ' <img src="'.$this->url.'link_orig.gif" align="top" width="16" height="16" /> ';
+						if (sql_num_rows($qid_sel)) echo ' <img src="'.$this->url.'images/link_orig.gif" align="top" width="16" height="16" /> ';
 						while ($row_sel = sql_fetch_array($qid_sel)){
 							$tname = $this->plug->getTableAboutFromID('tname', $row_sel["ftid"]);
 							$origin[] = '<a href="'.$this->url.'?action=fedit'.
@@ -527,7 +532,7 @@ h6 {
 						break;
 					case "Select":
 						if ($fsetting){ //
-							echo '<img src="'.$this->url.'link.gif" align="top" width="16" height="16" /> ';
+							echo '<img src="'.$this->url.'images/link.gif" align="top" width="16" height="16" /> ';
 							$row_link = $this->plug->getFieldDataFromFieldId($fsetting);
 							$tname    = $this->plug->getTableAboutFromID('tname', $row_link["ftid"]);
 							$fsetting = '<a href="'.$this->url.'?action=fedit'.
@@ -587,7 +592,7 @@ h6 {
 			</tbody>
 		</table>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX74; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX74; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -672,7 +677,7 @@ h6 {
 				}
 			}
 		}
-		return (strlen($ret)) ? $ret : ',<img src="'.$this->url.'link_dele.gif" align="top" />'."[$fid]".$fname;
+		return (strlen($ret)) ? $ret : ',<img src="'.$this->url.'images/link_dele.gif" align="top" />'."[$fid]".$fname;
 	}
 	/**
 	 * 
@@ -749,7 +754,7 @@ h6 {
 			$this->start('fedit', 0, $msg);
 ?>
 			<div class="t01"><div class="t02"><div class="t03">
-			<h3><?php echo _ZNIFEX83; ?></h3>
+			<h3 class="h03"><?php echo _ZNIFEX83; ?></h3>
 			</div></div></div>
 			<form method="post" action="<?php echo $this->url ?>index.php" name="fedit">
 				<div>
@@ -920,6 +925,7 @@ h6 {
 	function action_fdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -978,7 +984,7 @@ h6 {
 		$this->start('r_overview', 1, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX92; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX92; ?></h3>
 		</div></div></div>
 <?php
 		//SQL
@@ -1012,11 +1018,11 @@ h6 {
 					            '&amp;tid='   .$row_set["ftid"].
 					            '&amp;fname=' .$row_set["fname"];
 					$imgtitle = $tname.".".$row_set["fname"].''._ZNIFEX94.'';
-					$img = '<a href="'.$fediturl.'"><img src="'.$this->url.'link.gif" width="16" height="16" align="top" title="'.$imgtitle.'" /></a>';
+					$img = '<a href="'.$fediturl.'"><img src="'.$this->url.'images/link.gif" width="16" height="16" align="top" title="'.$imgtitle.'" /></a>';
 				} else {
 					//Select
 					$fieldsArray["t0.f__".$row_field["fname"]." AS f".$asName] = "t0.f__".$row_field["fname"]." AS f".$asName;
-					$img = '<img src="'.$this->url.'link_dele.gif" width="16" height="16" align="top" /> <span style="color: #f00;">'._ZNIFEX95.'</span>';
+					$img = '<img src="'.$this->url.'images/link_dele.gif" width="16" height="16" align="top" /> <span style="color: #f00;">'._ZNIFEX95.'</span>';
 				}
 			} else {
 				//SelectSelect
@@ -1087,7 +1093,7 @@ h6 {
 				foreach ($fieldsArray as $key => $value){ //
 					//
 					$temp    = explode("AS ", ($key == $value) ? $key : $value); //
-					$img     = ($key == $value) ? '' : '<img src="'.$this->url.'link.gif" width="16" height="16" align="top" />';
+					$img     = ($key == $value) ? '' : '<img src="'.$this->url.'images/link.gif" width="16" height="16" align="top" />';
 					$bp      = &$manager->getBlog($CONF['DefaultBlog']); //convertBreaks
 					$tempdat = $row_record[$temp[1]];
 					$id      = ($temp[1] == "f0") ? $tempdat : $id;
@@ -1114,7 +1120,7 @@ h6 {
 ?>
 		<a name="radd"></a>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX99; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX99; ?></h3>
 		</div></div></div>
 <?php
 		if ($rowTable["ttype"] != 0){
@@ -1153,7 +1159,7 @@ h6 {
 		$this->start('redit', 1, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX102; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX102; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -1184,6 +1190,7 @@ h6 {
 	function action_rdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -1215,6 +1222,7 @@ h6 {
 	function action_rdelete_all() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -1247,7 +1255,7 @@ h6 {
 		$this->start('rsearch', 2, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX107; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX107; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -1275,7 +1283,7 @@ h6 {
 		$divStyle = "
 			font-family: 'Trebuchet MS', 'Bitstream Vera Sans', verdana, lucida, arial, helvetica, sans-serif; 
 			padding: 10px; 
-			background: url(".$this->url."verinfo_bc.gif) repeat-x; 
+			background: url(".$this->url."images/verinfo_bc.gif) repeat-x;
 			border-top: 3px solid #fff; 
 			border-left: 3px solid #fff; 
 			border-bottom: 3px solid #666; 
@@ -1284,7 +1292,7 @@ h6 {
 ?>
 		<div style="margin: 20px; width: 380px; border: 2px solid #bbb;">
 			<div style="<?php echo $divStyle; ?>">
-				<img src="<?php echo $this->url.$this->plugname; ?>shade.gif" align="left" />
+				<img src="<?php echo $this->url.'images/'.$this->plugname; ?>shade.gif" align="left" />
 				<div style="height: 40px;">Version Check [XML-RPC]</div>
 				<div style="margin: 7px 0;font-size: 30px; color: #47d; font-weight: bold;">NP_<?php echo $this->plugname; ?></div>
 <?php

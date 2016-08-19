@@ -14,7 +14,7 @@
 <h3>プラグインの概要</h3>
 </div></div></div>
 
-<img src="<?php echo $plugin_dir; ?>znItemFieldEX.gif" align="left" style="margin: 0 8px 3px 0" />
+<img src="<?php echo $plugin_dir; ?>images/znItemFieldEX.gif" align="left" style="margin: 0 8px 3px 0" />
 アイテムのフィールド（項目）を拡張するプラグインです。<br />
 タイトル、本文、続き、日付、カテゴリ、投稿者などの、Nucleusの標準機能として用意されているアイテムの項目以外に、好きな項目を追加し、拡張することができます。フィールドの拡張は、ブログ単位で行います。（拡張テーブルを作成し、リレーションさせることも可能です。）<br />
 追加できるフィールドのタイプは、以下の通りです。<br />

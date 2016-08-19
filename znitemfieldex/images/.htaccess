@@ -1,0 +1,8 @@
+DirectoryIndex index.html index.htm .ht
+
+# allow only  *.gif
+# (?!  negative assertion
+<FilesMatch "^(?!\.ht|.+\.gif$)">
+Order allow,deny
+Deny from all
+</FilesMatch>
