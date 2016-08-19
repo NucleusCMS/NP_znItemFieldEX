@@ -404,6 +404,7 @@ h6 {
 	function action_tdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM ?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -924,6 +925,7 @@ h6 {
 	function action_fdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -1188,6 +1190,7 @@ h6 {
 	function action_rdelete() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
@@ -1219,6 +1222,7 @@ h6 {
 	function action_rdelete_all() {
 		global $manager;
 		$this->plugAdmin->start();
+        echo '<h2>'.$this->plugname.'</h2>';
 ?>
 		<h2><?php echo _DELETE_CONFIRM?></h2>
 		<form method="post" action="<?php echo $this->url ?>index.php">
