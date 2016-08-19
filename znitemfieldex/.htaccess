@@ -2,7 +2,7 @@ DirectoryIndex index.html index.htm index.php .ht
 
 # allow only index.*  help.*  *.gif
 # (?!  negative assertion
-<FilesMatch "^(?!\.ht|index\.|.+\.gif|help\.|$)">
+<FilesMatch "^(?!\.ht|index\.|.+\.(gif|swf)$|help\.|$)">
 Order allow,deny
 Deny from all
 </FilesMatch>
