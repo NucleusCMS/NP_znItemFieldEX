@@ -46,7 +46,7 @@ class NP_znItemFieldEX extends NucleusPlugin
 
         // include language file for this plugin
         $language = str_replace( array('\\','/'), '', getLanguageName());
-        $incFile  = (is_file($this->getDirectory().$language.'.php')) ? $language : 'english';
+        $incFile  = 'language/' . ((is_file($this->getDirectory().'language/'.$language.'.php')) ? $language : 'english');
         include_once($this->getDirectory().$incFile.'.php');
         $this->language = $incFile;
         //
