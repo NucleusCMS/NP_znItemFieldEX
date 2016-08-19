@@ -6,9 +6,18 @@ if (!isset($manager)) {
 }
 
 	$language = str_replace( array('\\','/'), '', getLanguageName());
-    $plugin_path = str_replace('\\','/',dirname(__FILE__));
-    $dir_name = trim(substr($plugin_path,strrpos($plugin_path,'/')),'/');
-    $plugin_dir = "plugins/{$dir_name}/";
+	$plugin_path = str_replace('\\','/',dirname(__FILE__));
+	$dir_name = trim(substr($plugin_path,strrpos($plugin_path,'/')),'/');
+	global $CONF, $manager;
+	if (isset($CONF))
+	{
+		if ($manager->pluginInstalled('NP_znItemFieldEX') && ($plugin = $manager->getPlugin('NP_znItemFieldEX')))
+			$plugin_dir = $plugin->getAdminURL();
+		else
+			$plugin_dir = $CONF['PluginURL'] . "{$dir_name}/";
+	}
+	else
+		$plugin_dir = "plugins/{$dir_name}/";
     $plugin_path = $plugin_path . '/';
     $p = (isset($_GET['p'])) ? htmlspecialchars($_GET['p'],ENT_QUOTES,_CHARSET) : '';
 	$help_path = "{$plugin_path}{$language}.help{$p}.php";
