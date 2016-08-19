@@ -128,6 +128,10 @@ h6 {
 	background: url(' . $this->url . 'images/t03' . $modeColor . '.gif) right no-repeat;
 	height: 18px;
 }
+.h03 {
+ display: initial !important;
+ padding-left: 0px !important;
+}
 -->
 </style>'
 		);
@@ -208,7 +212,7 @@ h6 {
 		$this->start('t_overview', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX31; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX31; ?></h3>
 		</div></div></div>
 		<table>
 			<thead><tr><th><?php echo _ZNIFEX39; ?></th><th><?php echo _ZNIFEX40; ?></th><th><?php echo _ZNIFEX41; ?></th><th colspan="7"><?php echo _ZNIFEX42; ?></th><th><?php echo _ZNIFEX43; ?></th><th><?php echo _ZNIFEX44; ?></th></tr></thead>
@@ -240,7 +244,7 @@ h6 {
 			</tbody>
 		</table>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX48; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX48; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -340,7 +344,7 @@ h6 {
 			$this->start('tedit', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX54; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX54; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -447,7 +451,7 @@ h6 {
 		$this->start('f_overview', 0, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX60; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX60; ?></h3>
 		</div></div></div>
 		<table>
 			<thead>
@@ -587,7 +591,7 @@ h6 {
 			</tbody>
 		</table>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX74; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX74; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -749,7 +753,7 @@ h6 {
 			$this->start('fedit', 0, $msg);
 ?>
 			<div class="t01"><div class="t02"><div class="t03">
-			<h3><?php echo _ZNIFEX83; ?></h3>
+			<h3 class="h03"><?php echo _ZNIFEX83; ?></h3>
 			</div></div></div>
 			<form method="post" action="<?php echo $this->url ?>index.php" name="fedit">
 				<div>
@@ -978,7 +982,7 @@ h6 {
 		$this->start('r_overview', 1, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX92; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX92; ?></h3>
 		</div></div></div>
 <?php
 		//SQL
@@ -1114,7 +1118,7 @@ h6 {
 ?>
 		<a name="radd"></a>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX99; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX99; ?></h3>
 		</div></div></div>
 <?php
 		if ($rowTable["ttype"] != 0){
@@ -1153,7 +1157,7 @@ h6 {
 		$this->start('redit', 1, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX102; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX102; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
@@ -1247,7 +1251,7 @@ h6 {
 		$this->start('rsearch', 2, $msg);
 ?>
 		<div class="t01"><div class="t02"><div class="t03">
-		<h3><?php echo _ZNIFEX107; ?></h3>
+		<h3 class="h03"><?php echo _ZNIFEX107; ?></h3>
 		</div></div></div>
 		<form method="post" action="<?php echo $this->url ?>index.php">
 			<div>
