@@ -20,7 +20,7 @@ if (!isset($manager)) {
 		$plugin_dir = "plugins/{$dir_name}/";
     $plugin_path = $plugin_path . '/';
     $p = (isset($_GET['p'])) ? htmlspecialchars($_GET['p'],ENT_QUOTES,_CHARSET) : '';
-	$help_path = "{$plugin_path}{$language}.help{$p}.php";
+	$help_path = "{$plugin_path}help/{$language}.help{$p}.php";
 	$k = array();
 	foreach($_GET as $k=>$v)
     {
